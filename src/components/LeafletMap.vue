@@ -7,11 +7,11 @@
             <div class="gallery-content">
                 <button class="close-button" @click="closeGallery">&times;</button>
                 <div class="gallery-images">
-                    <img v-for="(image, index) in galleryImages" :key="index" :src="image.src" :alt="image.alt"
+                    <img v-for="(image, index) in galleryImages" :key="index" :src="this.getURL(image.src,'S')" :alt="image.alt"
                         @click="showFullImage(image)">
                 </div>
                 <div v-if="fullScreenImage" class="full-screen-image" @click="closeFullImage">
-                    <img :src="fullScreenImage.src" :alt="fullScreenImage.alt">
+                    <img :src="this.getURL(fullScreenImage.src,'X5')" :alt="fullScreenImage.alt">
                 </div>
             </div>
         </div>
@@ -376,7 +376,6 @@ export default {
                 ) : null;
                 // Only show gallery markers if the date matches
                 if (poi.isGallery && poiDate.toDateString() != parsedDate.toDateString()) {
-                    debugger;
                     return;
                 }
                 // Only show POIs if the date matches (or is after the image date)
@@ -408,8 +407,8 @@ export default {
             // Common polyline options for sewage lines
             this.addSewageLines();
         },
-        getURL(image) {
-            return `https://photos.smugmug.com/photos/${image}/0/MX8rJZ7VmWTrCcW5QLgPbzPnnqCv7xB7rQ4qZjpwX/4K/${image}-4K.jpg`;
+        getURL(image,size) {
+            return `https://photos.smugmug.com/photos/${image}/0/MX8rJZ7VmWTrCcW5QLgPbzPnnqCv7xB7rQ4qZjpwX/${size}/${image}.jpg`;
         },
         openGallery(galleryId, title) {
             this.galleryTitle = title || 'Galeria de Fotos';
@@ -418,390 +417,390 @@ export default {
             switch (galleryId) {
                 case 'before':
                     this.galleryImages = [
-                        { src: this.getURL('i-4Wwt4bC'), alt: 'Frente do Pateo' },
-                        { src: this.getURL('i-FcHM4dP'), alt: 'Frente do Pateo' },
+                        { src: 'i-4Wwt4bC', alt: 'Frente do Pateo' },
+                        { src: 'i-FcHM4dP', alt: 'Frente do Pateo' },
 
                     ];
                     break;
                 case 'construction':
                     this.galleryImages = [
-                        { src: this.getURL('i-3hp6W9Z'), alt: 'Frente do Pateo' },
-                        { src: this.getURL('i-BS2RTpR'), alt: 'Frente do Pateo' },
-                        { src: this.getURL('i-3Z49bQD'), alt: 'Frente do Pateo' },
+                        { src: 'i-3hp6W9Z', alt: 'Frente do Pateo' },
+                        { src: 'i-BS2RTpR', alt: 'Frente do Pateo' },
+                        { src: 'i-3Z49bQD', alt: 'Frente do Pateo' },
                     ];
                     break;
                 case 'olivetree':
                     this.galleryImages = [
-                        { src: this.getURL('i-z3XcsC5'), alt: 'Frente do Pateo' },
-                        { src: this.getURL('i-6XWqLzw'), alt: 'Frente do Pateo' },
+                        { src: 'i-z3XcsC5', alt: 'Frente do Pateo' },
+                        { src: 'i-6XWqLzw', alt: 'Frente do Pateo' },
                     ];
                     break;
                 case 'geodrenos':
                     this.galleryImages = [
-                        { src: this.getURL('i-Q7r5GLf'), alt: 'Frente do Pateo' },
-                        { src: this.getURL('i-9njWhfV'), alt: 'Frente do Pateo' },
-                        { src: this.getURL('i-nXqvkmC'), alt: 'Frente do Pateo' },
+                        { src: 'i-Q7r5GLf', alt: 'Frente do Pateo' },
+                        { src: 'i-9njWhfV', alt: 'Frente do Pateo' },
+                        { src: 'i-nXqvkmC', alt: 'Frente do Pateo' },
 
 
                     ];
                     break;
                 case 'lake':
                     this.galleryImages = [
-                        { src: this.getURL('i-gzJzvDs'), alt: 'Frente do Pateo' },
-                        { src: this.getURL('i-xNHM5hq'), alt: 'Frente do Pateo' },
-                        { src: this.getURL('i-hC5KVB7'), alt: 'Frente do Pateo' },
+                        { src: 'i-gzJzvDs', alt: 'Frente do Pateo' },
+                        { src: 'i-xNHM5hq', alt: 'Frente do Pateo' },
+                        { src: 'i-hC5KVB7', alt: 'Frente do Pateo' },
                     ];
                     break;
                 case 'lage':
                     this.galleryImages = [
-                        { src: this.getURL('i-jPNj3jJ'), alt: 'Frente do Pateo' },
+                        { src: 'i-jPNj3jJ', alt: 'Frente do Pateo' },
                     ];
                     break;
 
                 case 'struture-building':
                     this.galleryImages = [
-                        { src: this.getURL('i-9tF6KKF'), alt: 'Frente do Pateo' },
-                        { src: this.getURL('i-SjSMhJd'), alt: 'Frente do Pateo' },
-                        { src: this.getURL('i-Gd465vD'), alt: 'Frente do Pateo' },
-                        { src: this.getURL('i-r2Zx4Dr'), alt: 'Frente do Pateo' },
-                        { src: this.getURL('i-3jXtt6j'), alt: 'Frente do Pateo' },
-                        { src: this.getURL('i-JRJGNBQ'), alt: 'Frente do Pateo' },
-                        { src: this.getURL('i-DrWSN8N'), alt: 'Frente do Pateo' },
-                        { src: this.getURL('i-vSHFXwC'), alt: 'Frente do Pateo' },
-                        { src: this.getURL('i-hxwQL2p'), alt: 'Frente do Pateo' },
-                        { src: this.getURL('i-RbxTWWR'), alt: 'Frente do Pateo' },
-                        { src: this.getURL('i-nc6zk8C'), alt: 'Frente do Pateo' },
-                        { src: this.getURL('i-Pz5vWM2'), alt: 'Frente do Pateo' },
+                        { src: 'i-9tF6KKF', alt: 'Frente do Pateo' },
+                        { src: 'i-SjSMhJd', alt: 'Frente do Pateo' },
+                        { src: 'i-Gd465vD', alt: 'Frente do Pateo' },
+                        { src: 'i-r2Zx4Dr', alt: 'Frente do Pateo' },
+                        { src: 'i-3jXtt6j', alt: 'Frente do Pateo' },
+                        { src: 'i-JRJGNBQ', alt: 'Frente do Pateo' },
+                        { src: 'i-DrWSN8N', alt: 'Frente do Pateo' },
+                        { src: 'i-vSHFXwC', alt: 'Frente do Pateo' },
+                        { src: 'i-hxwQL2p', alt: 'Frente do Pateo' },
+                        { src: 'i-RbxTWWR', alt: 'Frente do Pateo' },
+                        { src: 'i-nc6zk8C', alt: 'Frente do Pateo' },
+                        { src: 'i-Pz5vWM2', alt: 'Frente do Pateo' },
                     ];
                     break;
                 case 'struture-placagem':
                     this.galleryImages = [
-                        { src: this.getURL('i-R6VhpZP'), alt: 'Frente do Pateo' },
-                        { src: this.getURL('i-gDMRJKf'), alt: 'Frente do Pateo' },
-                        { src: this.getURL('i-jsRnWRx'), alt: 'Frente do Pateo' },
-                        { src: this.getURL('i-KJPJ8s3'), alt: 'Frente do Pateo' },
-                        { src: this.getURL('i-86P4hVV'), alt: 'Frente do Pateo' },
-                        { src: this.getURL('i-nTV6p53'), alt: 'Frente do Pateo' },
+                        { src: 'i-R6VhpZP', alt: 'Frente do Pateo' },
+                        { src: 'i-gDMRJKf', alt: 'Frente do Pateo' },
+                        { src: 'i-jsRnWRx', alt: 'Frente do Pateo' },
+                        { src: 'i-KJPJ8s3', alt: 'Frente do Pateo' },
+                        { src: 'i-86P4hVV', alt: 'Frente do Pateo' },
+                        { src: 'i-nTV6p53', alt: 'Frente do Pateo' },
                     ];
                     break;
                 case 'struture-interior':
                     this.galleryImages = [
-                        { src: this.getURL('i-gDMRJKf'), alt: 'Frente do Pateo' },
-                        { src: this.getURL('i-3btGT2J'), alt: 'Frente do Pateo' },
-                        { src: this.getURL('i-GQTJ9kc'), alt: 'Frente do Pateo' },
-                        { src: this.getURL('i-6npGNmW'), alt: 'Frente do Pateo' },
-                        { src: this.getURL('i-C2hpQ22'), alt: 'Frente do Pateo' },
-                        { src: this.getURL('i-qtBN7Th'), alt: 'Frente do Pateo' },
-                        { src: this.getURL('i-xZsHz3H'), alt: 'Frente do Pateo' },
-                        { src: this.getURL('i-kpZhqFK'), alt: 'Frente do Pateo' },
-                        { src: this.getURL('i-Nx97FRX'), alt: 'Frente do Pateo' },
-                        { src: this.getURL('i-n5c4Cwt'), alt: 'Frente do Pateo' },
-                        { src: this.getURL('i-ZvCTDFx'), alt: 'Frente do Pateo' },
-                        { src: this.getURL('i-VxqTwBp'), alt: 'Frente do Pateo' },
-                        { src: this.getURL('i-5CjxcDp'), alt: 'Frente do Pateo' },
+                        { src: 'i-gDMRJKf', alt: 'Frente do Pateo' },
+                        { src: 'i-3btGT2J', alt: 'Frente do Pateo' },
+                        { src: 'i-GQTJ9kc', alt: 'Frente do Pateo' },
+                        { src: 'i-6npGNmW', alt: 'Frente do Pateo' },
+                        { src: 'i-C2hpQ22', alt: 'Frente do Pateo' },
+                        { src: 'i-qtBN7Th', alt: 'Frente do Pateo' },
+                        { src: 'i-xZsHz3H', alt: 'Frente do Pateo' },
+                        { src: 'i-kpZhqFK', alt: 'Frente do Pateo' },
+                        { src: 'i-Nx97FRX', alt: 'Frente do Pateo' },
+                        { src: 'i-n5c4Cwt', alt: 'Frente do Pateo' },
+                        { src: 'i-ZvCTDFx', alt: 'Frente do Pateo' },
+                        { src: 'i-VxqTwBp', alt: 'Frente do Pateo' },
+                        { src: 'i-5CjxcDp', alt: 'Frente do Pateo' },
                     ];
                     break; //
                 case 'pool-hole':
                     this.galleryImages = [
-                        { src: this.getURL('i-GW8k6j4'), alt: 'Frente do Pateo' },
-                        { src: this.getURL('i-FD5nKFr'), alt: 'Frente do Pateo' },
-                        { src: this.getURL('i-7KJvhZK'), alt: 'Frente do Pateo' },
+                        { src: 'i-GW8k6j4', alt: 'Frente do Pateo' },
+                        { src: 'i-FD5nKFr', alt: 'Frente do Pateo' },
+                        { src: 'i-7KJvhZK', alt: 'Frente do Pateo' },
                     ];
                     break;
                 case 'chinese-case':
                     this.galleryImages = [
-                        { src: this.getURL('i-XNRcdJQ'), alt: 'Frente do Pateo' },
-                        { src: this.getURL('i-L7RpnzM'), alt: 'Frente do Pateo' },
-                        { src: this.getURL('i-8HCGd6x'), alt: 'Frente do Pateo' },
-                        { src: this.getURL('i-v2WC5KG'), alt: 'Frente do Pateo' },
-                        { src: this.getURL('i-6VfXz8m'), alt: 'Frente do Pateo' },
-                        { src: this.getURL('i-2qcQd9K'), alt: 'Frente do Pateo' },
-                        { src: this.getURL('i-kJGfsbN'), alt: 'Frente do Pateo' },
-                        { src: this.getURL('i-jNDzdF9'), alt: 'Frente do Pateo' },
-                        { src: this.getURL('i-MrsWqJs'), alt: 'Frente do Pateo' },
-                        { src: this.getURL('i-RJrLggg'), alt: 'Frente do Pateo' },
+                        { src: 'i-XNRcdJQ', alt: 'Frente do Pateo' },
+                        { src: 'i-L7RpnzM', alt: 'Frente do Pateo' },
+                        { src: 'i-8HCGd6x', alt: 'Frente do Pateo' },
+                        { src: 'i-v2WC5KG', alt: 'Frente do Pateo' },
+                        { src: 'i-6VfXz8m', alt: 'Frente do Pateo' },
+                        { src: 'i-2qcQd9K', alt: 'Frente do Pateo' },
+                        { src: 'i-kJGfsbN', alt: 'Frente do Pateo' },
+                        { src: 'i-jNDzdF9', alt: 'Frente do Pateo' },
+                        { src: 'i-MrsWqJs', alt: 'Frente do Pateo' },
+                        { src: 'i-RJrLggg', alt: 'Frente do Pateo' },
                     ];
                     break;
                 case 'night-view':
                     this.galleryImages = [
-                        { src: this.getURL('i-Tp6ZNr4'), alt: 'Frente do Pateo' },
-                        { src: this.getURL('i-9SbvNPQ'), alt: 'Frente do Pateo' },
-                        { src: this.getURL('i-NXhVm3W'), alt: 'Frente do Pateo' },
+                        { src: 'i-Tp6ZNr4', alt: 'Frente do Pateo' },
+                        { src: 'i-9SbvNPQ', alt: 'Frente do Pateo' },
+                        { src: 'i-NXhVm3W', alt: 'Frente do Pateo' },
                     ];
                     break;
                 case 'internal-view01':
                     this.galleryImages = [
-                        { src: this.getURL('i-rvGKhHK'), alt: 'Frente do Pateo' },
+                        { src: 'i-rvGKhHK', alt: 'Frente do Pateo' },
                     ];
                     break;
                 case 'internal-view02':
                     this.galleryImages = [
-                        { src: this.getURL('i-RrftZLV'), alt: 'Frente do Pateo' },
-                        { src: this.getURL('i-VBK9dnL'), alt: 'Frente do Pateo' },
-                        { src: this.getURL('i-DNF7kvd'), alt: 'Frente do Pateo' },
-                        { src: this.getURL('i-rKDSggh'), alt: 'Frente do Pateo' },
+                        { src: 'i-RrftZLV', alt: 'Frente do Pateo' },
+                        { src: 'i-VBK9dnL', alt: 'Frente do Pateo' },
+                        { src: 'i-DNF7kvd', alt: 'Frente do Pateo' },
+                        { src: 'i-rKDSggh', alt: 'Frente do Pateo' },
                     ];
                     break;
                 case 'water-damage01':
                     this.galleryImages = [
-                        { src: this.getURL('i-D7s86NJ'), alt: 'Frente do Pateo' },
-                        { src: this.getURL('i-2mtMBKG'), alt: 'Frente do Pateo' },
-                        { src: this.getURL('i-dMTpsnH'), alt: 'Frente do Pateo' },
-                        { src: this.getURL('i-bWnpxBs'), alt: 'Frente do Pateo' },
-                        { src: this.getURL('i-nJ4KvnC'), alt: 'Frente do Pateo' },
-                        { src: this.getURL('i-NqGw3Tz'), alt: 'Frente do Pateo' }
+                        { src: 'i-D7s86NJ', alt: 'Frente do Pateo' },
+                        { src: 'i-2mtMBKG', alt: 'Frente do Pateo' },
+                        { src: 'i-dMTpsnH', alt: 'Frente do Pateo' },
+                        { src: 'i-bWnpxBs', alt: 'Frente do Pateo' },
+                        { src: 'i-nJ4KvnC', alt: 'Frente do Pateo' },
+                        { src: 'i-NqGw3Tz', alt: 'Frente do Pateo' }
                     ];
                     break;
                 case 'water-damage02':
                     this.galleryImages = [
-                        { src: this.getURL('i-n4DDBM2'), alt: 'Frente do Pateo' },
-                        { src: this.getURL('i-dn3bMGR'), alt: 'Frente do Pateo' },
+                        { src: 'i-n4DDBM2', alt: 'Frente do Pateo' },
+                        { src: 'i-dn3bMGR', alt: 'Frente do Pateo' },
                     ];
                     break;
                 case 'pool-prep':
                     this.galleryImages = [
-                        { src: this.getURL('i-GW8k6j4'), alt: 'Frente do Pateo' },
-                        { src: this.getURL('i-gzjftVG'), alt: 'Frente do Pateo' },
-                        { src: this.getURL('i-7KJvhZK'), alt: 'Frente do Pateo' },
-                        { src: this.getURL('i-rzt8Lg9'), alt: 'Frente do Pateo' },
+                        { src: 'i-GW8k6j4', alt: 'Frente do Pateo' },
+                        { src: 'i-gzjftVG', alt: 'Frente do Pateo' },
+                        { src: 'i-7KJvhZK', alt: 'Frente do Pateo' },
+                        { src: 'i-rzt8Lg9', alt: 'Frente do Pateo' },
                     ];
                     break;
                 case 'roofInspect':
                     this.galleryImages = [
-                        { src: this.getURL('i-bLtgB95'), alt: 'Frente do Pateo' },
-                        { src: this.getURL('i-RcPKptq'), alt: 'Frente do Pateo' },
+                        { src: 'i-bLtgB95', alt: 'Frente do Pateo' },
+                        { src: 'i-RcPKptq', alt: 'Frente do Pateo' },
                     ];
                     break;
                 case 'sideView':
                     this.galleryImages = [
-                        { src: this.getURL('i-rwPwWDs'), alt: 'Frente do Pateo' },
-                        { src: this.getURL('i-2sstJ4d'), alt: 'Frente do Pateo' },
+                        { src: 'i-rwPwWDs', alt: 'Frente do Pateo' },
+                        { src: 'i-2sstJ4d', alt: 'Frente do Pateo' },
 
                     ];
                     break;
                 case 'sideView02':
                     this.galleryImages = [
-                        { src: this.getURL('i-FrFwx8K'), alt: 'Frente do Pateo' },
-                        { src: this.getURL('i-WsSDkLm'), alt: 'Frente do Pateo' },
-                        { src: this.getURL('i-DNF7kvd'), alt: 'Frente do Pateo' },
-                        { src: this.getURL('i-rKDSggh'), alt: 'Frente do Pateo' },
+                        { src: 'i-FrFwx8K', alt: 'Frente do Pateo' },
+                        { src: 'i-WsSDkLm', alt: 'Frente do Pateo' },
+                        { src: 'i-DNF7kvd', alt: 'Frente do Pateo' },
+                        { src: 'i-rKDSggh', alt: 'Frente do Pateo' },
                     ];
                     break;
                 case 'interior01':
                     this.galleryImages = [
-                        { src: this.getURL('i-rvGKhHK'), alt: 'Frente do Pateo' },
-                        { src: this.getURL('i-RrftZLV'), alt: 'Frente do Pateo' },
-                        { src: this.getURL('i-VBK9dnL'), alt: 'Frente do Pateo' },
-                        { src: this.getURL('i-bcHHcWH'), alt: 'Frente do Pateo' },
-                        { src: this.getURL('i-dmzrdnP'), alt: 'Frente do Pateo' },
-                        { src: this.getURL('i-xdJtc6b'), alt: 'Frente do Pateo' },
-                        { src: this.getURL('i-5dk27sx'), alt: 'Frente do Pateo' },
-                        { src: this.getURL('i-fzNKs5S'), alt: 'Frente do Pateo' },
-                        { src: this.getURL('i-QXJNMpV'), alt: 'Frente do Pateo' },
+                        { src: 'i-rvGKhHK', alt: 'Frente do Pateo' },
+                        { src: 'i-RrftZLV', alt: 'Frente do Pateo' },
+                        { src: 'i-VBK9dnL', alt: 'Frente do Pateo' },
+                        { src: 'i-bcHHcWH', alt: 'Frente do Pateo' },
+                        { src: 'i-dmzrdnP', alt: 'Frente do Pateo' },
+                        { src: 'i-xdJtc6b', alt: 'Frente do Pateo' },
+                        { src: 'i-5dk27sx', alt: 'Frente do Pateo' },
+                        { src: 'i-fzNKs5S', alt: 'Frente do Pateo' },
+                        { src: 'i-QXJNMpV', alt: 'Frente do Pateo' },
                     ];
                     break;
                 case 'interior02':
                     this.galleryImages = [
-                        { src: this.getURL('i-pPNWGPB'), alt: 'Frente do Pateo' },
-                        { src: this.getURL('i-NqxDmZW'), alt: 'Frente do Pateo' },
-                        { src: this.getURL('i-8z5tZmh'), alt: 'Frente do Pateo' },
-                        { src: this.getURL('i-HVbnfcR'), alt: 'Frente do Pateo' },
-                        { src: this.getURL('i-mt5WvKq'), alt: 'Frente do Pateo' },
-                        { src: this.getURL('i-m8dL9Pt'), alt: 'Frente do Pateo' },
-                        { src: this.getURL('i-WVtM7mG'), alt: 'Frente do Pateo' },
-                        { src: this.getURL('i-Lxw8x6v'), alt: 'Frente do Pateo' },
-                        { src: this.getURL('i-n8gsJ72'), alt: 'Frente do Pateo' },
-                        { src: this.getURL('i-sQVGfQD'), alt: 'Frente do Pateo' },
-                        { src: this.getURL('i-LwwkrW3'), alt: 'Frente do Pateo' },
-                        { src: this.getURL('i-qLq5QkX'), alt: 'Frente do Pateo' },
+                        { src: 'i-pPNWGPB', alt: 'Frente do Pateo' },
+                        { src: 'i-NqxDmZW', alt: 'Frente do Pateo' },
+                        { src: 'i-8z5tZmh', alt: 'Frente do Pateo' },
+                        { src: 'i-HVbnfcR', alt: 'Frente do Pateo' },
+                        { src: 'i-mt5WvKq', alt: 'Frente do Pateo' },
+                        { src: 'i-m8dL9Pt', alt: 'Frente do Pateo' },
+                        { src: 'i-WVtM7mG', alt: 'Frente do Pateo' },
+                        { src: 'i-Lxw8x6v', alt: 'Frente do Pateo' },
+                        { src: 'i-n8gsJ72', alt: 'Frente do Pateo' },
+                        { src: 'i-sQVGfQD', alt: 'Frente do Pateo' },
+                        { src: 'i-LwwkrW3', alt: 'Frente do Pateo' },
+                        { src: 'i-qLq5QkX', alt: 'Frente do Pateo' },
                     ];
                     break;
                 case 'exterior02':
                     this.galleryImages = [
-                        { src: this.getURL('i-pDGQwB4'), alt: 'Frente do Pateo' },
-                        { src: this.getURL('i-s7N7LjQ'), alt: 'Frente do Pateo' },
-                        { src: this.getURL('i-r2rjbt5'), alt: 'Frente do Pateo' },
-                        { src: this.getURL('i-cfMkhXn'), alt: 'Frente do Pateo' },
-                        { src: this.getURL('i-FNCzWd8'), alt: 'Frente do Pateo' },
-                        { src: this.getURL('i-6QfJhX9'), alt: 'Frente do Pateo' },
-                        { src: this.getURL('i-964z32f'), alt: 'Frente do Pateo' },
-                        { src: this.getURL('i-zmdT9sw'), alt: 'Frente do Pateo' },
-                        { src: this.getURL('i-P7kB7Q2'), alt: 'Frente do Pateo' },
-                        { src: this.getURL('i-MtddJLx'), alt: 'Frente do Pateo' },
-                        { src: this.getURL('i-457D8Vc'), alt: 'Frente do Pateo' },
-                        { src: this.getURL('i-tmZ7sbx'), alt: 'Frente do Pateo' },
-                        { src: this.getURL('i-sJ58gmg'), alt: 'Frente do Pateo' },
+                        { src: 'i-pDGQwB4', alt: 'Frente do Pateo' },
+                        { src: 'i-s7N7LjQ', alt: 'Frente do Pateo' },
+                        { src: 'i-r2rjbt5', alt: 'Frente do Pateo' },
+                        { src: 'i-cfMkhXn', alt: 'Frente do Pateo' },
+                        { src: 'i-FNCzWd8', alt: 'Frente do Pateo' },
+                        { src: 'i-6QfJhX9', alt: 'Frente do Pateo' },
+                        { src: 'i-964z32f', alt: 'Frente do Pateo' },
+                        { src: 'i-zmdT9sw', alt: 'Frente do Pateo' },
+                        { src: 'i-P7kB7Q2', alt: 'Frente do Pateo' },
+                        { src: 'i-MtddJLx', alt: 'Frente do Pateo' },
+                        { src: 'i-457D8Vc', alt: 'Frente do Pateo' },
+                        { src: 'i-tmZ7sbx', alt: 'Frente do Pateo' },
+                        { src: 'i-sJ58gmg', alt: 'Frente do Pateo' },
                     ];
                     break;
                 case 'interior03':
                     this.galleryImages = [
-                        { src: this.getURL('i-8PjSh2b'), alt: 'Frente do Pateo' },
-                        { src: this.getURL('i-qXTtJJB'), alt: 'Frente do Pateo' },
-                        { src: this.getURL('i-3dSkwcV'), alt: 'Frente do Pateo' },
-                        { src: this.getURL('i-L8zJCmd'), alt: 'Frente do Pateo' },
-                        { src: this.getURL('i-7CvCpZf'), alt: 'Frente do Pateo' },
-                        { src: this.getURL('i-LLQ8xc3'), alt: 'Frente do Pateo' },
-                        { src: this.getURL('i-Nk9vqcq'), alt: 'Frente do Pateo' },
-                        { src: this.getURL('i-Wzwrk3q'), alt: 'Frente do Pateo' },
-                        { src: this.getURL('i-mdJKJqS'), alt: 'Frente do Pateo' },
-                        { src: this.getURL('i-5Zzgf7q'), alt: 'Frente do Pateo' }];
+                        { src: 'i-8PjSh2b', alt: 'Frente do Pateo' },
+                        { src: 'i-qXTtJJB', alt: 'Frente do Pateo' },
+                        { src: 'i-3dSkwcV', alt: 'Frente do Pateo' },
+                        { src: 'i-L8zJCmd', alt: 'Frente do Pateo' },
+                        { src: 'i-7CvCpZf', alt: 'Frente do Pateo' },
+                        { src: 'i-LLQ8xc3', alt: 'Frente do Pateo' },
+                        { src: 'i-Nk9vqcq', alt: 'Frente do Pateo' },
+                        { src: 'i-Wzwrk3q', alt: 'Frente do Pateo' },
+                        { src: 'i-mdJKJqS', alt: 'Frente do Pateo' },
+                        { src: 'i-5Zzgf7q', alt: 'Frente do Pateo' }];
                     break;
                 case 'exterior03':
                     this.galleryImages = [
-                        { src: this.getURL('i-4DXPdnF'), alt: 'Frente do Pateo' },
-                        { src: this.getURL('i-RVqRpVx'), alt: 'Frente do Pateo' },
-                        { src: this.getURL('i-Zn9mNR3'), alt: 'Frente do Pateo' },
-                        { src: this.getURL('i-JM2Sdq2'), alt: 'Frente do Pateo' },
-                        { src: this.getURL('i-gSMJz4m'), alt: 'Frente do Pateo' },
-                        { src: this.getURL('i-ChxFnHC'), alt: 'Frente do Pateo' },
-                        { src: this.getURL('i-NJhdGcq'), alt: 'Frente do Pateo' },
-                        { src: this.getURL('i-Zx8TCZp'), alt: 'Frente do Pateo' }];
+                        { src: 'i-4DXPdnF', alt: 'Frente do Pateo' },
+                        { src: 'i-RVqRpVx', alt: 'Frente do Pateo' },
+                        { src: 'i-Zn9mNR3', alt: 'Frente do Pateo' },
+                        { src: 'i-JM2Sdq2', alt: 'Frente do Pateo' },
+                        { src: 'i-gSMJz4m', alt: 'Frente do Pateo' },
+                        { src: 'i-ChxFnHC', alt: 'Frente do Pateo' },
+                        { src: 'i-NJhdGcq', alt: 'Frente do Pateo' },
+                        { src: 'i-Zx8TCZp', alt: 'Frente do Pateo' }];
                     break;
                 case 'exterior04':
                     this.galleryImages = [
-                        { src: this.getURL('i-wvcfG2D'), alt: 'Frente do Pateo' },
-                        { src: this.getURL('i-Nh43GdW'), alt: 'Frente do Pateo' },
-                        { src: this.getURL('i-q9Rsfkv'), alt: 'Frente do Pateo' },
-                        { src: this.getURL('i-qvFmX8v'), alt: 'Frente do Pateo' },
-                        { src: this.getURL('i-nqKshzm'), alt: 'Frente do Pateo' },
-                        { src: this.getURL('i-9742mBR'), alt: 'Frente do Pateo' },
-                        { src: this.getURL('i-6BvG7SB'), alt: 'Frente do Pateo' }];
+                        { src: 'i-wvcfG2D', alt: 'Frente do Pateo' },
+                        { src: 'i-Nh43GdW', alt: 'Frente do Pateo' },
+                        { src: 'i-q9Rsfkv', alt: 'Frente do Pateo' },
+                        { src: 'i-qvFmX8v', alt: 'Frente do Pateo' },
+                        { src: 'i-nqKshzm', alt: 'Frente do Pateo' },
+                        { src: 'i-9742mBR', alt: 'Frente do Pateo' },
+                        { src: 'i-6BvG7SB', alt: 'Frente do Pateo' }];
                     break;
                 case 'interior04':
                     this.galleryImages = [
-                        { src: this.getURL('i-DhxgWHB'), alt: 'Frente do Pateo' },
-                        { src: this.getURL('i-zZ5WgVN'), alt: 'Frente do Pateo' },
-                        { src: this.getURL('i-WQWPPjX'), alt: 'Frente do Pateo' },
-                        { src: this.getURL('i-3XfR828'), alt: 'Frente do Pateo' },
-                        { src: this.getURL('i-z7xsvht'), alt: 'Frente do Pateo' },
-                        { src: this.getURL('i-MTprt73'), alt: 'Frente do Pateo' },
-                        { src: this.getURL('i-c7JJLSZ'), alt: 'Frente do Pateo' },
-                        { src: this.getURL('i-hj2PbZj'), alt: 'Frente do Pateo' },
-                        { src: this.getURL('i-d2JCc6Z'), alt: 'Frente do Pateo' },
-                        { src: this.getURL('i-GpkxvbF'), alt: 'Frente do Pateo' },
-                        { src: this.getURL('i-hj2PbZj'), alt: 'Frente do Pateo' }];
+                        { src: 'i-DhxgWHB', alt: 'Frente do Pateo' },
+                        { src: 'i-zZ5WgVN', alt: 'Frente do Pateo' },
+                        { src: 'i-WQWPPjX', alt: 'Frente do Pateo' },
+                        { src: 'i-3XfR828', alt: 'Frente do Pateo' },
+                        { src: 'i-z7xsvht', alt: 'Frente do Pateo' },
+                        { src: 'i-MTprt73', alt: 'Frente do Pateo' },
+                        { src: 'i-c7JJLSZ', alt: 'Frente do Pateo' },
+                        { src: 'i-hj2PbZj', alt: 'Frente do Pateo' },
+                        { src: 'i-d2JCc6Z', alt: 'Frente do Pateo' },
+                        { src: 'i-GpkxvbF', alt: 'Frente do Pateo' },
+                        { src: 'i-hj2PbZj', alt: 'Frente do Pateo' }];
                     break;
                 case 'exterior05':
                     this.galleryImages = [
-                        { src: this.getURL('i-K788dw5'), alt: 'Frente do Pateo' },
-                        { src: this.getURL('i-tFdC4WM'), alt: 'Frente do Pateo' },
-                        { src: this.getURL('i-2gp8pW3'), alt: 'Frente do Pateo' },
-                        { src: this.getURL('i-mbfv588'), alt: 'Frente do Pateo' },
-                        { src: this.getURL('i-mgSF53d'), alt: 'Frente do Pateo' }
+                        { src: 'i-K788dw5', alt: 'Frente do Pateo' },
+                        { src: 'i-tFdC4WM', alt: 'Frente do Pateo' },
+                        { src: 'i-2gp8pW3', alt: 'Frente do Pateo' },
+                        { src: 'i-mbfv588', alt: 'Frente do Pateo' },
+                        { src: 'i-mgSF53d', alt: 'Frente do Pateo' }
                     ];
                     break;
                 case 'interior05':
                     this.galleryImages = [
-                        { src: this.getURL('i-qWnQwjL'), alt: 'Frente do Pateo' },
-                        { src: this.getURL('i-fmts2qZ'), alt: 'Frente do Pateo' },
-                        { src: this.getURL('i-XKpwN6D'), alt: 'Frente do Pateo' },
-                        { src: this.getURL('i-W8KxXqv'), alt: 'Frente do Pateo' },
-                        { src: this.getURL('i-SQnhdr4'), alt: 'Frente do Pateo' },
-                        { src: this.getURL('i-rpf8594'), alt: 'Frente do Pateo' },
-                        { src: this.getURL('i-PsgTZPw'), alt: 'Frente do Pateo' },
-                        { src: this.getURL('i-4CKFnGj'), alt: 'Frente do Pateo' },
-                        { src: this.getURL('i-bWG9R3B'), alt: 'Frente do Pateo' },
-                        { src: this.getURL('i-Xxhkfjf'), alt: 'Frente do Pateo' },
-                        { src: this.getURL('i-b5MwmST'), alt: 'Frente do Pateo' },
-                        { src: this.getURL('i-KcT5SSv'), alt: 'Frente do Pateo' },
-                        { src: this.getURL('i-4gwjbnZ'), alt: 'Frente do Pateo' },
-                        { src: this.getURL('i-VJ7mwpv'), alt: 'Frente do Pateo' },
-                        { src: this.getURL('i-RgNNZtb'), alt: 'Frente do Pateo' },
-                        { src: this.getURL('i-xJjFzXJ'), alt: 'Frente do Pateo' },
-                        { src: this.getURL('i-DCh8CDR'), alt: 'Frente do Pateo' },
-                        { src: this.getURL('i-JdkJbxK'), alt: 'Frente do Pateo' },
-                        { src: this.getURL('i-sKqmjXC'), alt: 'Frente do Pateo' },
-                        { src: this.getURL('i-4vPpsJq'), alt: 'Frente do Pateo' },
-                        { src: this.getURL('i-WZJJ7Cd'), alt: 'Frente do Pateo' },
-                        { src: this.getURL('i-HNnJp7X'), alt: 'Frente do Pateo' },
-                        { src: this.getURL('i-bVZDwXg'), alt: 'Frente do Pateo' },
-                        { src: this.getURL('i-tDkvq9p'), alt: 'Frente do Pateo' },
-                        { src: this.getURL('i-LPKNNHF'), alt: 'Frente do Pateo' },
+                        { src: 'i-qWnQwjL', alt: 'Frente do Pateo' },
+                        { src: 'i-fmts2qZ', alt: 'Frente do Pateo' },
+                        { src: 'i-XKpwN6D', alt: 'Frente do Pateo' },
+                        { src: 'i-W8KxXqv', alt: 'Frente do Pateo' },
+                        { src: 'i-SQnhdr4', alt: 'Frente do Pateo' },
+                        { src: 'i-rpf8594', alt: 'Frente do Pateo' },
+                        { src: 'i-PsgTZPw', alt: 'Frente do Pateo' },
+                        { src: 'i-4CKFnGj', alt: 'Frente do Pateo' },
+                        { src: 'i-bWG9R3B', alt: 'Frente do Pateo' },
+                        { src: 'i-Xxhkfjf', alt: 'Frente do Pateo' },
+                        { src: 'i-b5MwmST', alt: 'Frente do Pateo' },
+                        { src: 'i-KcT5SSv', alt: 'Frente do Pateo' },
+                        { src: 'i-4gwjbnZ', alt: 'Frente do Pateo' },
+                        { src: 'i-VJ7mwpv', alt: 'Frente do Pateo' },
+                        { src: 'i-RgNNZtb', alt: 'Frente do Pateo' },
+                        { src: 'i-xJjFzXJ', alt: 'Frente do Pateo' },
+                        { src: 'i-DCh8CDR', alt: 'Frente do Pateo' },
+                        { src: 'i-JdkJbxK', alt: 'Frente do Pateo' },
+                        { src: 'i-sKqmjXC', alt: 'Frente do Pateo' },
+                        { src: 'i-4vPpsJq', alt: 'Frente do Pateo' },
+                        { src: 'i-WZJJ7Cd', alt: 'Frente do Pateo' },
+                        { src: 'i-HNnJp7X', alt: 'Frente do Pateo' },
+                        { src: 'i-bVZDwXg', alt: 'Frente do Pateo' },
+                        { src: 'i-tDkvq9p', alt: 'Frente do Pateo' },
+                        { src: 'i-LPKNNHF', alt: 'Frente do Pateo' },
                     ];
                     break;
                 case 'interior06':
                     this.galleryImages = [
-                        { src: this.getURL('i-Rv2fckZ'), alt: 'Frente do Pateo' },
-                        { src: this.getURL('i-CNdnk4N'), alt: 'Frente do Pateo' },
-                        { src: this.getURL('i-CbJcbG2'), alt: 'Frente do Pateo' },
-                        { src: this.getURL('i-VDCxhNV'), alt: 'Frente do Pateo' },
-                        { src: this.getURL('i-b57PzZJ'), alt: 'Frente do Pateo' },
-                        { src: this.getURL('i-dcQqgNG'), alt: 'Frente do Pateo' },
-                        { src: this.getURL('i-VdPhXpK'), alt: 'Frente do Pateo' },
-                        { src: this.getURL('i-P2HD34Q'), alt: 'Frente do Pateo' },
-                        { src: this.getURL('i-kXRJ5PP'), alt: 'Frente do Pateo' },
-                        { src: this.getURL('i-j5tP9DS'), alt: 'Frente do Pateo' },
-                        { src: this.getURL('i-5ptVTmX'), alt: 'Frente do Pateo' },
-                        { src: this.getURL('i-pR8VKNZ'), alt: 'Frente do Pateo' },
-                        { src: this.getURL('i-nPLKRJ7'), alt: 'Frente do Pateo' },
-                        { src: this.getURL('i-F4DKrXb'), alt: 'Frente do Pateo' },
-                        { src: this.getURL('i-NHWrCHF'), alt: 'Frente do Pateo' },
-                        { src: this.getURL('i-cLBtDKS'), alt: 'Frente do Pateo' },
-                        { src: this.getURL('i-xgJPCh6'), alt: 'Frente do Pateo' },
-                        { src: this.getURL('i-fPCZT7m'), alt: 'Frente do Pateo' },
-                        { src: this.getURL('i-QzJ77SX'), alt: 'Frente do Pateo' },
-                        { src: this.getURL('i-NPGPr78'), alt: 'Frente do Pateo' },
-                        { src: this.getURL('i-SDdT86B'), alt: 'Frente do Pateo' },
-                        { src: this.getURL('i-PQc7T23'), alt: 'Frente do Pateo' },
-                        { src: this.getURL('i-J9xqwTx'), alt: 'Frente do Pateo' },
-                        { src: this.getURL('i-6NSSZ3D'), alt: 'Frente do Pateo' },
-                        { src: this.getURL('i-Ljxqq56'), alt: 'Frente do Pateo' },
+                        { src: 'i-Rv2fckZ', alt: 'Frente do Pateo' },
+                        { src: 'i-CNdnk4N', alt: 'Frente do Pateo' },
+                        { src: 'i-CbJcbG2', alt: 'Frente do Pateo' },
+                        { src: 'i-VDCxhNV', alt: 'Frente do Pateo' },
+                        { src: 'i-b57PzZJ', alt: 'Frente do Pateo' },
+                        { src: 'i-dcQqgNG', alt: 'Frente do Pateo' },
+                        { src: 'i-VdPhXpK', alt: 'Frente do Pateo' },
+                        { src: 'i-P2HD34Q', alt: 'Frente do Pateo' },
+                        { src: 'i-kXRJ5PP', alt: 'Frente do Pateo' },
+                        { src: 'i-j5tP9DS', alt: 'Frente do Pateo' },
+                        { src: 'i-5ptVTmX', alt: 'Frente do Pateo' },
+                        { src: 'i-pR8VKNZ', alt: 'Frente do Pateo' },
+                        { src: 'i-nPLKRJ7', alt: 'Frente do Pateo' },
+                        { src: 'i-F4DKrXb', alt: 'Frente do Pateo' },
+                        { src: 'i-NHWrCHF', alt: 'Frente do Pateo' },
+                        { src: 'i-cLBtDKS', alt: 'Frente do Pateo' },
+                        { src: 'i-xgJPCh6', alt: 'Frente do Pateo' },
+                        { src: 'i-fPCZT7m', alt: 'Frente do Pateo' },
+                        { src: 'i-QzJ77SX', alt: 'Frente do Pateo' },
+                        { src: 'i-NPGPr78', alt: 'Frente do Pateo' },
+                        { src: 'i-SDdT86B', alt: 'Frente do Pateo' },
+                        { src: 'i-PQc7T23', alt: 'Frente do Pateo' },
+                        { src: 'i-J9xqwTx', alt: 'Frente do Pateo' },
+                        { src: 'i-6NSSZ3D', alt: 'Frente do Pateo' },
+                        { src: 'i-Ljxqq56', alt: 'Frente do Pateo' },
                     ];
                     break;
                     case 'exterior06':
                     this.galleryImages = [
-                        { src: this.getURL('i-zhwjgbW'), alt: 'Frente do Pateo' },
-                        { src: this.getURL('i-5LP2qMx'), alt: 'Frente do Pateo' },
-                        { src: this.getURL('i-JbqKmMS'), alt: 'Frente do Pateo' },
-                        { src: this.getURL('i-5XsMm4p'), alt: 'Frente do Pateo' },
-                        { src: this.getURL('i-52pDwWg'), alt: 'Frente do Pateo' },
-                        { src: this.getURL('i-jXqDrKg'), alt: 'Frente do Pateo' },
-                        { src: this.getURL('i-6ZtMm4k'), alt: 'Frente do Pateo' },
-                        { src: this.getURL('i-CKfJFqN'), alt: 'Frente do Pateo' },
-                        { src: this.getURL('i-kNvQLLh'), alt: 'Frente do Pateo' },
-                        { src: this.getURL('i-X2GxTCf'), alt: 'Frente do Pateo' }
+                        { src: 'i-zhwjgbW', alt: 'Frente do Pateo' },
+                        { src: 'i-5LP2qMx', alt: 'Frente do Pateo' },
+                        { src: 'i-JbqKmMS', alt: 'Frente do Pateo' },
+                        { src: 'i-5XsMm4p', alt: 'Frente do Pateo' },
+                        { src: 'i-52pDwWg', alt: 'Frente do Pateo' },
+                        { src: 'i-jXqDrKg', alt: 'Frente do Pateo' },
+                        { src: 'i-6ZtMm4k', alt: 'Frente do Pateo' },
+                        { src: 'i-CKfJFqN', alt: 'Frente do Pateo' },
+                        { src: 'i-kNvQLLh', alt: 'Frente do Pateo' },
+                        { src: 'i-X2GxTCf', alt: 'Frente do Pateo' }
                     ];
                     break;
                     case 'interior07':
                     this.galleryImages = [
-                        { src: this.getURL('i-p5HrmN9'), alt: 'Frente do Pateo' },
-                        { src: this.getURL('i-Pr4QH6L'), alt: 'Frente do Pateo' },
-                        { src: this.getURL('i-XhvTtZF'), alt: 'Frente do Pateo' },
-                        { src: this.getURL('i-zGfrntx'), alt: 'Frente do Pateo' },
-                        { src: this.getURL('i-pN57T8M'), alt: 'Frente do Pateo' },
-                        { src: this.getURL('i-DpTksKL'), alt: 'Frente do Pateo' },
-                        { src: this.getURL('i-rjcJp8p'), alt: 'Frente do Pateo' },
-                        { src: this.getURL('i-FL3m5jn'), alt: 'Frente do Pateo' },
-                        { src: this.getURL('i-5ZTsdR3'), alt: 'Frente do Pateo' },
-                        { src: this.getURL('i-rwXDH3C'), alt: 'Frente do Pateo' },
-                        { src: this.getURL('i-ZpjfwWc'), alt: 'Frente do Pateo' },
-                        { src: this.getURL('i-vdsPGSb'), alt: 'Frente do Pateo' },
-                        { src: this.getURL('i-cjxZhrS'), alt: 'Frente do Pateo' },
-                        { src: this.getURL('i-jVGF5Wv'), alt: 'Frente do Pateo' },
-                        { src: this.getURL('i-VT2DGKP'), alt: 'Frente do Pateo' },
-                        { src: this.getURL('i-bb8vnFH'), alt: 'Frente do Pateo' },
-                        { src: this.getURL('i-MKcpsDx'), alt: 'Frente do Pateo' },
-                        { src: this.getURL('i-m2Z2VZ3'), alt: 'Frente do Pateo' },
-                        { src: this.getURL('i-KLzbJdP'), alt: 'Frente do Pateo' },
-                        { src: this.getURL('i-kZbR4b7'), alt: 'Frente do Pateo' },
-                        { src: this.getURL('i-rtNBkvR'), alt: 'Frente do Pateo' },
-                        { src: this.getURL('i-jXzfknQ'), alt: 'Frente do Pateo' },
-                        { src: this.getURL('i-Xb7drm4'), alt: 'Frente do Pateo' },
-                        { src: this.getURL('i-3zbR35n'), alt: 'Frente do Pateo' },
-                        { src: this.getURL('i-Bq4D797'), alt: 'Frente do Pateo' }
+                        { src: 'i-p5HrmN9', alt: 'Frente do Pateo' },
+                        { src: 'i-Pr4QH6L', alt: 'Frente do Pateo' },
+                        { src: 'i-XhvTtZF', alt: 'Frente do Pateo' },
+                        { src: 'i-zGfrntx', alt: 'Frente do Pateo' },
+                        { src: 'i-pN57T8M', alt: 'Frente do Pateo' },
+                        { src: 'i-DpTksKL', alt: 'Frente do Pateo' },
+                        { src: 'i-rjcJp8p', alt: 'Frente do Pateo' },
+                        { src: 'i-FL3m5jn', alt: 'Frente do Pateo' },
+                        { src: 'i-5ZTsdR3', alt: 'Frente do Pateo' },
+                        { src: 'i-rwXDH3C', alt: 'Frente do Pateo' },
+                        { src: 'i-ZpjfwWc', alt: 'Frente do Pateo' },
+                        { src: 'i-vdsPGSb', alt: 'Frente do Pateo' },
+                        { src: 'i-cjxZhrS', alt: 'Frente do Pateo' },
+                        { src: 'i-jVGF5Wv', alt: 'Frente do Pateo' },
+                        { src: 'i-VT2DGKP', alt: 'Frente do Pateo' },
+                        { src: 'i-bb8vnFH', alt: 'Frente do Pateo' },
+                        { src: 'i-MKcpsDx', alt: 'Frente do Pateo' },
+                        { src: 'i-m2Z2VZ3', alt: 'Frente do Pateo' },
+                        { src: 'i-KLzbJdP', alt: 'Frente do Pateo' },
+                        { src: 'i-kZbR4b7', alt: 'Frente do Pateo' },
+                        { src: 'i-rtNBkvR', alt: 'Frente do Pateo' },
+                        { src: 'i-jXzfknQ', alt: 'Frente do Pateo' },
+                        { src: 'i-Xb7drm4', alt: 'Frente do Pateo' },
+                        { src: 'i-3zbR35n', alt: 'Frente do Pateo' },
+                        { src: 'i-Bq4D797', alt: 'Frente do Pateo' }
                     ];
                     break;
                     case 'exterior07':
                         this.galleryImages = [
-                            { src: this.getURL('i-Q4vZN8k'), alt: 'Frente do Pateo' },
-                            { src: this.getURL('i-mMSLDqx'), alt: 'Frente do Pateo' },
-                            { src: this.getURL('i-6ntqXVL'), alt: 'Frente do Pateo' },
-                            { src: this.getURL('i-8LnDqsw'), alt: 'Frente do Pateo' },
-                            { src: this.getURL('i-ZzkmmXm'), alt: 'Frente do Pateo' },
-                            { src: this.getURL('i-s4b4qHC'), alt: 'Frente do Pateo' },
-                            { src: this.getURL('i-Pnbg7tQ'), alt: 'Frente do Pateo' },
-                            { src: this.getURL('i-XDZSncQ'), alt: 'Frente do Pateo' },
-                            { src: this.getURL('i-t4b4s99'), alt: 'Frente do Pateo' }
+                            { src: 'i-Q4vZN8k', alt: 'Frente do Pateo' },
+                            { src: 'i-mMSLDqx', alt: 'Frente do Pateo' },
+                            { src: 'i-6ntqXVL', alt: 'Frente do Pateo' },
+                            { src: 'i-8LnDqsw', alt: 'Frente do Pateo' },
+                            { src: 'i-ZzkmmXm', alt: 'Frente do Pateo' },
+                            { src: 'i-s4b4qHC', alt: 'Frente do Pateo' },
+                            { src: 'i-Pnbg7tQ', alt: 'Frente do Pateo' },
+                            { src: 'i-XDZSncQ', alt: 'Frente do Pateo' },
+                            { src: 'i-t4b4s99', alt: 'Frente do Pateo' }
                     ];
                     break;  
                 default:

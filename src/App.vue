@@ -30,6 +30,17 @@
             :showFloorPlant="showFloorPlant" 
             :hidePOI="hidePOI"
             :showGalery="showGalery" />
+            
+        <div class="slider-container">
+            <div class="slider-label">{{ formatDate(selectedDate) }}</div>
+            <input 
+                type="range" 
+                min="0" 
+                :max="availableDates.length - 1" 
+                :value="currentSliderIndex" 
+                @input="onSliderChange($event)"
+                class="timeline-slider">
+        </div>
     </div>
 </template>
 
@@ -88,6 +99,11 @@ export default {
             }
         };
     },
+    computed: {
+        currentSliderIndex() {
+            return this.availableDates.findIndex(date => date === this.selectedDate);
+        }
+    },
     methods: {
         updateImage() {
             const newImageUrl = this.images[this.selectedDate];
@@ -130,6 +146,11 @@ export default {
                 clearInterval(this.slideshowTimer);
                 this.slideshowTimer = null;
             }
+        },
+        onSliderChange(event) {
+            const index = parseInt(event.target.value);
+            this.selectedDate = this.availableDates[index];
+            this.updateImage();
         }
     },
     beforeUnmount() {
@@ -170,5 +191,30 @@ select {
     padding: 5px;
     border: 1px solid #ccc;
     border-radius: 3px;
+}
+
+.slider-container {
+    position: absolute;
+    bottom: 20px;
+    left: 0;
+    right: 0;
+    width: 80%;
+    margin: 0 auto;
+    background-color: rgba(255, 255, 255, 0.7);
+    padding: 15px;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    text-align: center;
+    z-index: 1000;
+}
+
+.slider-label {
+    margin-bottom: 8px;
+    font-weight: bold;
+}
+
+.timeline-slider {
+    width: 100%;
+    cursor: pointer;
 }
 </style>
