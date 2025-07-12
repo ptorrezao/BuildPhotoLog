@@ -38,18 +38,18 @@ let DefaultIcon = L.icon({
     iconAnchor: [12, 41]
 });
 
+const liconSize = [36, 36]; // Default icon size for custom icons
 // Define custom icons for different POI types
 const customIcons = {
-    
-    'lamp': L.icon({ iconUrl: "/icons/lamp.png", shadowUrl: iconShadow, iconSize: [36, 36], iconAnchor: [12, 41], popupAnchor: [0, -41] }),
-    'pool': L.icon({ iconUrl: "/icons/filter.png", shadowUrl: iconShadow, iconSize: [36, 36], iconAnchor: [12, 41], popupAnchor: [0, -41] }),
-    'pipe': L.icon({ iconUrl: "/icons/water-pipe.png", shadowUrl: iconShadow, iconSize: [36, 36], iconAnchor: [12, 41], popupAnchor: [0, -41] }),
-    'well': L.icon({ iconUrl: "/icons/rain-water-harvesting.png", shadowUrl: iconShadow, iconSize: [36, 36], iconAnchor: [12, 41], popupAnchor: [0, -41] }),
-    'sewage': L.icon({ iconUrl: "/icons/tee.png", shadowUrl: iconShadow, iconSize: [36, 36], iconAnchor: [12, 36], popupAnchor: [0, -36] }),
-    'water': L.icon({ iconUrl: "/icons/tap.png", shadowUrl: iconShadow, iconSize: [36, 36], iconAnchor: [12, 36], popupAnchor: [0, -36] }),
-    'electric': L.icon({ iconUrl: "/icons/wire.png", shadowUrl: iconShadow, iconSize: [36, 36], iconAnchor: [12, 36], popupAnchor: [0, -36] }),
-    'telcom': L.icon({ iconUrl: "/icons/lan.png", shadowUrl: iconShadow, iconSize: [36, 36], iconAnchor: [12, 36], popupAnchor: [0, -36] }),
-    'gallery': L.icon({ iconUrl: "/icons/camera.png", shadowUrl: iconShadow, iconSize: [36, 36], iconAnchor: [12, 42], popupAnchor: [0, -42] }),
+    'lamp': L.icon({ iconUrl: "/icons/lamp.png", shadowUrl: iconShadow, iconSize: liconSize, iconAnchor: [12, 41], popupAnchor: [0, -41] }),
+    'pool': L.icon({ iconUrl: "/icons/filter.png", shadowUrl: iconShadow, iconSize: liconSize, iconAnchor: [12, 41], popupAnchor: [0, -41] }),
+    'pipe': L.icon({ iconUrl: "/icons/water-pipe.png", shadowUrl: iconShadow, iconSize: liconSize, iconAnchor: [12, 41], popupAnchor: [0, -41] }),
+    'well': L.icon({ iconUrl: "/icons/rain-water-harvesting.png", shadowUrl: iconShadow, iconSize: liconSize, iconAnchor: [12, 41], popupAnchor: [0, -41] }),
+    'sewage': L.icon({ iconUrl: "/icons/tee.png", shadowUrl: iconShadow, iconSize: liconSize, iconAnchor: [12, 36], popupAnchor: [0, -36] }),
+    'water': L.icon({ iconUrl: "/icons/tap.png", shadowUrl: iconShadow, iconSize: liconSize, iconAnchor: [12, 36], popupAnchor: [0, -36] }),
+    'electric': L.icon({ iconUrl: "/icons/wire.png", shadowUrl: iconShadow, iconSize: liconSize, iconAnchor: [12, 36], popupAnchor: [0, -36] }),
+    'telcom': L.icon({ iconUrl: "/icons/lan.png", shadowUrl: iconShadow, iconSize: liconSize, iconAnchor: [12, 36], popupAnchor: [0, -36] }),
+    'gallery': L.icon({ iconUrl: "/icons/camera.png", shadowUrl: iconShadow, iconSize: liconSize, iconAnchor: [12, 42], popupAnchor: [0, -42] }),
 };
 
 L.Marker.prototype.options.icon = DefaultIcon;
@@ -174,11 +174,21 @@ export default {
                 this.polylines = [];
             }
 
-            // Remove image overlay
+            // Remove image overlay properly - this is the key fix
             if (this.imageOverlay && this.map) {
-                this.imageOverlay.remove();
+                try {
+                    // First set opacity to 0 to avoid transition glitches
+                    this.imageOverlay.setOpacity(0);
+                    // Then remove from map
+                    this.map.removeLayer(this.imageOverlay);
+                } catch (e) {
+                    console.log("Error removing overlay:", e);
+                }
                 this.imageOverlay = null;
             }
+            
+            // Reset marker references
+            this.markerRefs = {};
         },
 
         loadImageAndInitMap() {
@@ -192,6 +202,14 @@ export default {
                 if (!this.map) {
                     this.initMap(imgWidth, imgHeight);
                 } else {
+                    // Stop any ongoing map animations first
+                    if (this.map._animatingZoom) {
+                        try {
+                            this.map._onZoomTransitionEnd();
+                        } catch (e) {
+                            console.log("Error stopping zoom animation:", e);
+                        }
+                    }
                     this.updateImageOverlay(imgWidth, imgHeight);
                 }
             };
@@ -253,7 +271,8 @@ export default {
                 zoomDelta: 0.5,
                 wheelPxPerZoomLevel: 120,
                 attributionControl: false, // Remove attribution control to save space
-                zoomControl: false // Move zoom control to a better position later
+                zoomControl: false, // Move zoom control to a better position later
+                fadeAnimation: false // Add these options to reduce animation-related errors
             });
 
             // Add zoom control to bottom right
