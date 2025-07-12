@@ -5,13 +5,14 @@
         </div>
         <div v-if="showGallery" class="gallery-modal" @click.self="closeGallery">
             <div class="gallery-content">
+                <!-- <p>{{ this.galleryTitle }}</p> -->
                 <button class="close-button" @click="closeGallery">&times;</button>
                 <div class="gallery-images">
-                    <img v-for="(image, index) in galleryImages" :key="index" :src="this.getURL(image.src,'S')" :alt="image.alt"
-                        @click="showFullImage(image)">
+                    <img v-for="(image, index) in galleryImages" :key="index" :src="this.getURL(image.src, 'S')"
+                        :alt="image.alt" @click="showFullImage(image, false)">
                 </div>
                 <div v-if="fullScreenImage" class="full-screen-image" @click="closeFullImage">
-                    <img :src="this.getURL(fullScreenImage.src,'X5')" :alt="fullScreenImage.alt">
+                    <img :src="this.getURL(fullScreenImage.src, 'X5')" :alt="fullScreenImage.alt">
                 </div>
             </div>
         </div>
@@ -20,6 +21,8 @@
 
 <script>
 import L from 'leaflet';
+import { getGalleryImages } from '../utils/galleryData';
+import { getPOIs } from '../utils/poisData';
 
 // Fix for the missing marker icon issue in Leaflet with webpack
 import icon from 'leaflet/dist/images/marker-icon.png';
@@ -37,12 +40,16 @@ let DefaultIcon = L.icon({
 
 // Define custom icons for different POI types
 const customIcons = {
-    'well': L.icon({ iconUrl: "/icons/rain-water-harvesting.png", shadowUrl: iconShadow, iconSize: [48, 48], iconAnchor: [12, 41], popupAnchor: [0, -41] }),
+    
+    'lamp': L.icon({ iconUrl: "/icons/lamp.png", shadowUrl: iconShadow, iconSize: [36, 36], iconAnchor: [12, 41], popupAnchor: [0, -41] }),
+    'pool': L.icon({ iconUrl: "/icons/filter.png", shadowUrl: iconShadow, iconSize: [36, 36], iconAnchor: [12, 41], popupAnchor: [0, -41] }),
+    'pipe': L.icon({ iconUrl: "/icons/water-pipe.png", shadowUrl: iconShadow, iconSize: [36, 36], iconAnchor: [12, 41], popupAnchor: [0, -41] }),
+    'well': L.icon({ iconUrl: "/icons/rain-water-harvesting.png", shadowUrl: iconShadow, iconSize: [36, 36], iconAnchor: [12, 41], popupAnchor: [0, -41] }),
     'sewage': L.icon({ iconUrl: "/icons/tee.png", shadowUrl: iconShadow, iconSize: [36, 36], iconAnchor: [12, 36], popupAnchor: [0, -36] }),
     'water': L.icon({ iconUrl: "/icons/tap.png", shadowUrl: iconShadow, iconSize: [36, 36], iconAnchor: [12, 36], popupAnchor: [0, -36] }),
     'electric': L.icon({ iconUrl: "/icons/wire.png", shadowUrl: iconShadow, iconSize: [36, 36], iconAnchor: [12, 36], popupAnchor: [0, -36] }),
     'telcom': L.icon({ iconUrl: "/icons/lan.png", shadowUrl: iconShadow, iconSize: [36, 36], iconAnchor: [12, 36], popupAnchor: [0, -36] }),
-    'gallery': L.icon({ iconUrl: "/icons/camera.png", shadowUrl: iconShadow, iconSize: [42, 42], iconAnchor: [12, 42], popupAnchor: [0, -42] }),
+    'gallery': L.icon({ iconUrl: "/icons/camera.png", shadowUrl: iconShadow, iconSize: [36, 36], iconAnchor: [12, 42], popupAnchor: [0, -42] }),
 };
 
 L.Marker.prototype.options.icon = DefaultIcon;
@@ -81,7 +88,8 @@ export default {
             showGallery: false,
             galleryImages: [],
             fullScreenImage: null,
-            galleryTitle: ''
+            galleryTitle: '',
+            closeGalleryAfterFullScreen: false,
         };
     },
     watch: {
@@ -101,9 +109,11 @@ export default {
             // If showFloorPlant changes, reload the map with the new image
             if (newValue) {
                 this.startTransition();
+                this.clearMap();
                 this.loadImageAndInitMap();
             } else {
                 this.startTransition();
+                this.clearMap();
                 this.loadImageAndInitMap();
             }
         },
@@ -285,69 +295,8 @@ export default {
         },
 
         addMarkers(imgWidth, imgHeight) {
-            // Example POIs - with coordinates relative to image dimensions
-            const pois = [
-                { name: 'Poço', icon: 'well', location: [imgHeight * 0.915, imgWidth * 0.08], description: 'Poço do GeoDrenos', date: '20240510' },
-                // Caixa Visita de Esgotos
-                { name: 'CV0', icon: 'sewage', location: [imgHeight * 0.790, imgWidth * 0.020], description: 'Caixa de Visita do Esgoto 0', date: '20241116' },
-                { name: 'CV1', icon: 'sewage', location: [imgHeight * 0.720, imgWidth * 0.145], description: 'Caixa de Visita do Esgoto 1', date: '20241116' },
-                { name: 'CV2', icon: 'sewage', location: [imgHeight * 0.445, imgWidth * 0.145], description: 'Caixa de Visita do Esgoto 2', date: '20241116' },
-                { name: 'CV3', icon: 'sewage', location: [imgHeight * 0.178, imgWidth * 0.140], description: 'Caixa de Visita do Esgoto 3', date: '20241116' },
-                { name: 'CV4', icon: 'sewage', location: [imgHeight * 0.105, imgWidth * 0.422], description: 'Caixa de Visita do Esgoto 4', date: '20241116' },
-                { name: 'CV5', icon: 'sewage', location: [imgHeight * 0.105, imgWidth * 0.715], description: 'Caixa de Visita do Esgoto 5', date: '20241116' },
-                { name: 'CV6', icon: 'sewage', location: [imgHeight * 0.785, imgWidth * 0.755], description: 'Caixa de Visita do Esgoto 6', date: '20241205' },
-                { name: 'CV7', icon: 'sewage', location: [imgHeight * 0.785, imgWidth * 0.630], description: 'Caixa de Visita do Esgoto 7', date: '20241205' },
-                { name: 'CV8', icon: 'sewage', location: [imgHeight * 0.785, imgWidth * 0.460], description: 'Caixa de Visita do Esgoto 8', date: '20241205' },
-                { name: 'CV9', icon: 'sewage', location: [imgHeight * 0.785, imgWidth * 0.274], description: 'Caixa de Visita do Esgoto 9', date: '20241205' },
-                // Water point
-                { name: 'PA0', icon: 'water', location: [imgHeight * 0.960, imgWidth * 0.215], description: 'Torneira', date: '20250201' },
-                { name: 'PA1', icon: 'water', location: [imgHeight * 0.745, imgWidth * 0.935], description: 'Torneira', date: '20250201' },
-                { name: 'PA2', icon: 'water', location: [imgHeight * 0.050, imgWidth * 0.835], description: 'Torneira', date: '20250201' },
-                { name: 'PA3', icon: 'water', location: [imgHeight * 0.050, imgWidth * 0.660], description: 'Torneira', date: '20250201' },
-                { name: 'PA4', icon: 'water', location: [imgHeight * 0.050, imgWidth * 0.690], description: 'Chuveiro', date: '20250201' },
-
-                // Electrical substation
-                { name: 'Electricidade', icon: 'electric', location: [imgHeight * 0.62, imgWidth * 0.180], description: 'Subestação Elétrica', date: '20241120' },
-                { name: 'Telecomunicacoes', icon: 'telcom', location: [imgHeight * 0.62, imgWidth * 0.199], description: 'Subestação Elétrica', date: '20241110' },
-
-                // Gallery marker
-                { name: 'Galeria', icon: 'gallery', location: [imgHeight * 0.50, imgWidth * 0.5], description: 'Fotos', date: '20240515', isGallery: true, galleryId: 'before' },
-                { name: 'Galeria', icon: 'gallery', location: [imgHeight * 0.85, imgWidth * 0.1], description: 'Fotos', date: '20240515', isGallery: true, galleryId: 'geodrenos' },
-                { name: 'Galeria', icon: 'gallery', location: [imgHeight * 0.65, imgWidth * 0.8], description: 'Fotos', date: '20240515', isGallery: true, galleryId: 'lake' },
-                { name: 'Galeria', icon: 'gallery', location: [imgHeight * 0.60, imgWidth * 0.1], description: 'Fotos', date: '20250530', isGallery: true, galleryId: 'construction' },
-                { name: 'Galeria', icon: 'gallery', location: [imgHeight * 0.30, imgWidth * 0.1], description: 'Fotos', date: '20250530', isGallery: true, galleryId: 'olivetree' },
-                { name: 'Galeria', icon: 'gallery', location: [imgHeight * 0.50, imgWidth * 0.5], description: 'Fotos', date: '20240611', isGallery: true, galleryId: 'lage' },
-                { name: 'Galeria', icon: 'gallery', location: [imgHeight * 0.50, imgWidth * 0.5], description: 'Fotos', date: '20240729', isGallery: true, galleryId: 'struture-building' },
-                { name: 'Galeria', icon: 'gallery', location: [imgHeight * 0.40, imgWidth * 0.4], description: 'Fotos', date: '20240729', isGallery: true, galleryId: 'struture-placagem' },
-                { name: 'Galeria', icon: 'gallery', location: [imgHeight * 0.40, imgWidth * 0.4], description: 'Fotos', date: '20240910', isGallery: true, galleryId: 'struture-interior' },
-                { name: 'Galeria', icon: 'gallery', location: [imgHeight * 0.25, imgWidth * 0.95], description: 'Fotos', date: '20240927', isGallery: true, galleryId: 'chinese-case' },
-                { name: 'Galeria', icon: 'gallery', location: [imgHeight * 0.10, imgWidth * 0.45], description: 'Fotos', date: '20240927', isGallery: true, galleryId: 'night-view' },
-                { name: 'Galeria', icon: 'gallery', location: [imgHeight * 0.35, imgWidth * 0.28], description: 'Fotos', date: '20240927', isGallery: true, galleryId: 'internal-view01' },
-                { name: 'Galeria', icon: 'gallery', location: [imgHeight * 0.74, imgWidth * 0.30], description: 'Fotos', date: '20240927', isGallery: true, galleryId: 'internal-view02' },
-                { name: 'Galeria', icon: 'gallery', location: [imgHeight * 0.24, imgWidth * 0.60], description: 'Fotos', date: '20240919', isGallery: true, galleryId: 'pool-prep' },
-                { name: 'Galeria', icon: 'gallery', location: [imgHeight * 0.40, imgWidth * 0.20], description: 'Fotos', date: '20241012', isGallery: true, galleryId: 'roofInspect' },
-                { name: 'Galeria', icon: 'gallery', location: [imgHeight * 0.74, imgWidth * 0.30], description: 'Fotos', date: '20241012', isGallery: true, galleryId: 'water-damage01' },
-                { name: 'Galeria', icon: 'gallery', location: [imgHeight * 0.74, imgWidth * 0.40], description: 'Fotos', date: '20241012', isGallery: true, galleryId: 'water-damage02' },
-                { name: 'Galeria', icon: 'gallery', location: [imgHeight * 0.40, imgWidth * 0.65], description: 'Fotos', date: '20241117', isGallery: true, galleryId: 'sideView' },
-                { name: 'Galeria', icon: 'gallery', location: [imgHeight * 0.20, imgWidth * 0.40], description: 'Fotos', date: '20241117', isGallery: true, galleryId: 'sideView02' },
-                { name: 'Galeria', icon: 'gallery', location: [imgHeight * 0.30, imgWidth * 0.30], description: 'Fotos', date: '20241117', isGallery: true, galleryId: 'interior01' },
-                { name: 'Galeria', icon: 'gallery', location: [imgHeight * 0.40, imgWidth * 0.70], description: 'Fotos', date: '20241122', isGallery: true, galleryId: 'exterior02' },
-                { name: 'Galeria', icon: 'gallery', location: [imgHeight * 0.55, imgWidth * 0.30], description: 'Fotos', date: '20241206', isGallery: true, galleryId: 'interior03' },
-                { name: 'Galeria', icon: 'gallery', location: [imgHeight * 0.35, imgWidth * 0.60], description: 'Fotos', date: '20241206', isGallery: true, galleryId: 'exterior03' },
-
-                { name: 'Galeria', icon: 'gallery', location: [imgHeight * 0.55, imgWidth * 0.30], description: 'Fotos', date: '20250210', isGallery: true, galleryId: 'interior04' },
-                { name: 'Galeria', icon: 'gallery', location: [imgHeight * 0.35, imgWidth * 0.60], description: 'Fotos', date: '20250210', isGallery: true, galleryId: 'exterior04' },
-                { name: 'Galeria', icon: 'gallery', location: [imgHeight * 0.80, imgWidth * 0.30], description: 'Fotos', date: '20250504', isGallery: true, galleryId: 'exterior05' },
-                { name: 'Galeria', icon: 'gallery', location: [imgHeight * 0.50, imgWidth * 0.45], description: 'Fotos', date: '20250504', isGallery: true, galleryId: 'interior05' },
-
-
-                { name: 'Galeria', icon: 'gallery', location: [imgHeight * 0.40, imgWidth * 0.75], description: 'Fotos', date: '20250519', isGallery: true, galleryId: 'exterior06' },
-                { name: 'Galeria', icon: 'gallery', location: [imgHeight * 0.40, imgWidth * 0.30], description: 'Fotos', date: '20250519', isGallery: true, galleryId: 'interior06' },
-
-
-                { name: 'Galeria', icon: 'gallery', location: [imgHeight * 0.40, imgWidth * 0.75], description: 'Fotos', date: '20250530', isGallery: true, galleryId: 'exterior07' },
-                { name: 'Galeria', icon: 'gallery', location: [imgHeight * 0.40, imgWidth * 0.30], description: 'Fotos', date: '20250530', isGallery: true, galleryId: 'interior07' },
-            ];
+            // Get POIs from the utility function
+            const pois = getPOIs(imgHeight, imgWidth);
 
             // Extract the date from the image filename
             const dateMatch = this.imageUrl.match(/\/images\/(\d{8})\.jpg/);
@@ -362,7 +311,6 @@ export default {
             // Reset markerRefs for the new image
             this.markerRefs = {};
 
-            // If POIs are hidden, do not add any markers
             // Add markers to the map with custom icons based on name
             pois.forEach(poi => {
 
@@ -381,432 +329,52 @@ export default {
                 // Only show POIs if the date matches (or is after the image date)
                 if (!poi.isGallery && poiDate > parsedDate) return;
 
-
                 const markerIcon = customIcons[poi.icon] || DefaultIcon;
-                const marker = L.marker(poi.location, { icon: markerIcon }).addTo(this.map);
+                if ((poi.interior && this.showFloorPlant) || poi.interior === undefined || poi.interior === false) {
+                    const marker = L.marker(poi.location, { icon: markerIcon }).addTo(this.map);
 
-                if (poi.isGallery) {
-                    marker.on('click', () => {
-                        this.openGallery(poi.galleryId, poi.name);
-                    });
-                    marker.bindPopup(`<b>${poi.name}</b><br>${poi.description}<br><i>Clique para ver a galeria</i>`);
-                } else {
-                    marker.bindPopup(`<b>${poi.name}</b><br>${poi.description}`);
-                }
+                    if (poi.isGallery) {
+                        marker.on('click', () => {
+                            const galleryImages = getGalleryImages(poi.galleryId);
+                            if (galleryImages.length === 1) {
+                                this.showGallery = true;
+                                this.showFullImage(galleryImages[0], true);
+                            } else {
+                                this.openGallery(poi.galleryId, poi.name);
+                            }
+                        });
+                        marker.on('mouseover', () => {
+                            marker.openPopup();
+                        });
+                        marker.bindPopup(`<b>${poi.name}</b><br>${poi.description}<br><i>Clique para ver a galeria ${poi.interior}</i>`);
+                    } else {
+                        marker.bindPopup(`<b>${poi.name}</b><br>${poi.description}`);
+                    }
 
-                this.markers.push(marker);
-
-                if (['CV0', 'CV1', 'CV2', 'CV3', 'CV4', 'CV5', 'CV6', 'CV7', 'CV8', 'CV9'].includes(poi.name)) {
-                    this.markerRefs[poi.name] = {
-                        marker: marker,
-                        location: poi.location,
-                        visible: true
-                    };
+                    this.markers.push(marker);
+                    if (['water', 'sewage', 'pipe','pool','electric','lamp','telcom'].includes(poi.icon)) {
+                        this.markerRefs[poi.name] = {
+                            marker: marker,
+                            location: poi.location,
+                            visible: true
+                        };
+                    }
                 }
             });
             // Common polyline options for sewage lines
             this.addSewageLines();
+            this.addWaterLines();
+            this.addPoolLines();
+            this.addElectricLines();
+            this.addTelcomLines();
         },
-        getURL(image,size) {
+
+        getURL(image, size) {
             return `https://photos.smugmug.com/photos/${image}/0/MX8rJZ7VmWTrCcW5QLgPbzPnnqCv7xB7rQ4qZjpwX/${size}/${image}.jpg`;
         },
         openGallery(galleryId, title) {
-            this.galleryTitle = title || 'Galeria de Fotos';
-
-            // Set images based on gallery ID
-            switch (galleryId) {
-                case 'before':
-                    this.galleryImages = [
-                        { src: 'i-4Wwt4bC', alt: 'Frente do Pateo' },
-                        { src: 'i-FcHM4dP', alt: 'Frente do Pateo' },
-
-                    ];
-                    break;
-                case 'construction':
-                    this.galleryImages = [
-                        { src: 'i-3hp6W9Z', alt: 'Frente do Pateo' },
-                        { src: 'i-BS2RTpR', alt: 'Frente do Pateo' },
-                        { src: 'i-3Z49bQD', alt: 'Frente do Pateo' },
-                    ];
-                    break;
-                case 'olivetree':
-                    this.galleryImages = [
-                        { src: 'i-z3XcsC5', alt: 'Frente do Pateo' },
-                        { src: 'i-6XWqLzw', alt: 'Frente do Pateo' },
-                    ];
-                    break;
-                case 'geodrenos':
-                    this.galleryImages = [
-                        { src: 'i-Q7r5GLf', alt: 'Frente do Pateo' },
-                        { src: 'i-9njWhfV', alt: 'Frente do Pateo' },
-                        { src: 'i-nXqvkmC', alt: 'Frente do Pateo' },
-
-
-                    ];
-                    break;
-                case 'lake':
-                    this.galleryImages = [
-                        { src: 'i-gzJzvDs', alt: 'Frente do Pateo' },
-                        { src: 'i-xNHM5hq', alt: 'Frente do Pateo' },
-                        { src: 'i-hC5KVB7', alt: 'Frente do Pateo' },
-                    ];
-                    break;
-                case 'lage':
-                    this.galleryImages = [
-                        { src: 'i-jPNj3jJ', alt: 'Frente do Pateo' },
-                    ];
-                    break;
-
-                case 'struture-building':
-                    this.galleryImages = [
-                        { src: 'i-9tF6KKF', alt: 'Frente do Pateo' },
-                        { src: 'i-SjSMhJd', alt: 'Frente do Pateo' },
-                        { src: 'i-Gd465vD', alt: 'Frente do Pateo' },
-                        { src: 'i-r2Zx4Dr', alt: 'Frente do Pateo' },
-                        { src: 'i-3jXtt6j', alt: 'Frente do Pateo' },
-                        { src: 'i-JRJGNBQ', alt: 'Frente do Pateo' },
-                        { src: 'i-DrWSN8N', alt: 'Frente do Pateo' },
-                        { src: 'i-vSHFXwC', alt: 'Frente do Pateo' },
-                        { src: 'i-hxwQL2p', alt: 'Frente do Pateo' },
-                        { src: 'i-RbxTWWR', alt: 'Frente do Pateo' },
-                        { src: 'i-nc6zk8C', alt: 'Frente do Pateo' },
-                        { src: 'i-Pz5vWM2', alt: 'Frente do Pateo' },
-                    ];
-                    break;
-                case 'struture-placagem':
-                    this.galleryImages = [
-                        { src: 'i-R6VhpZP', alt: 'Frente do Pateo' },
-                        { src: 'i-gDMRJKf', alt: 'Frente do Pateo' },
-                        { src: 'i-jsRnWRx', alt: 'Frente do Pateo' },
-                        { src: 'i-KJPJ8s3', alt: 'Frente do Pateo' },
-                        { src: 'i-86P4hVV', alt: 'Frente do Pateo' },
-                        { src: 'i-nTV6p53', alt: 'Frente do Pateo' },
-                    ];
-                    break;
-                case 'struture-interior':
-                    this.galleryImages = [
-                        { src: 'i-gDMRJKf', alt: 'Frente do Pateo' },
-                        { src: 'i-3btGT2J', alt: 'Frente do Pateo' },
-                        { src: 'i-GQTJ9kc', alt: 'Frente do Pateo' },
-                        { src: 'i-6npGNmW', alt: 'Frente do Pateo' },
-                        { src: 'i-C2hpQ22', alt: 'Frente do Pateo' },
-                        { src: 'i-qtBN7Th', alt: 'Frente do Pateo' },
-                        { src: 'i-xZsHz3H', alt: 'Frente do Pateo' },
-                        { src: 'i-kpZhqFK', alt: 'Frente do Pateo' },
-                        { src: 'i-Nx97FRX', alt: 'Frente do Pateo' },
-                        { src: 'i-n5c4Cwt', alt: 'Frente do Pateo' },
-                        { src: 'i-ZvCTDFx', alt: 'Frente do Pateo' },
-                        { src: 'i-VxqTwBp', alt: 'Frente do Pateo' },
-                        { src: 'i-5CjxcDp', alt: 'Frente do Pateo' },
-                    ];
-                    break; //
-                case 'pool-hole':
-                    this.galleryImages = [
-                        { src: 'i-GW8k6j4', alt: 'Frente do Pateo' },
-                        { src: 'i-FD5nKFr', alt: 'Frente do Pateo' },
-                        { src: 'i-7KJvhZK', alt: 'Frente do Pateo' },
-                    ];
-                    break;
-                case 'chinese-case':
-                    this.galleryImages = [
-                        { src: 'i-XNRcdJQ', alt: 'Frente do Pateo' },
-                        { src: 'i-L7RpnzM', alt: 'Frente do Pateo' },
-                        { src: 'i-8HCGd6x', alt: 'Frente do Pateo' },
-                        { src: 'i-v2WC5KG', alt: 'Frente do Pateo' },
-                        { src: 'i-6VfXz8m', alt: 'Frente do Pateo' },
-                        { src: 'i-2qcQd9K', alt: 'Frente do Pateo' },
-                        { src: 'i-kJGfsbN', alt: 'Frente do Pateo' },
-                        { src: 'i-jNDzdF9', alt: 'Frente do Pateo' },
-                        { src: 'i-MrsWqJs', alt: 'Frente do Pateo' },
-                        { src: 'i-RJrLggg', alt: 'Frente do Pateo' },
-                    ];
-                    break;
-                case 'night-view':
-                    this.galleryImages = [
-                        { src: 'i-Tp6ZNr4', alt: 'Frente do Pateo' },
-                        { src: 'i-9SbvNPQ', alt: 'Frente do Pateo' },
-                        { src: 'i-NXhVm3W', alt: 'Frente do Pateo' },
-                    ];
-                    break;
-                case 'internal-view01':
-                    this.galleryImages = [
-                        { src: 'i-rvGKhHK', alt: 'Frente do Pateo' },
-                    ];
-                    break;
-                case 'internal-view02':
-                    this.galleryImages = [
-                        { src: 'i-RrftZLV', alt: 'Frente do Pateo' },
-                        { src: 'i-VBK9dnL', alt: 'Frente do Pateo' },
-                        { src: 'i-DNF7kvd', alt: 'Frente do Pateo' },
-                        { src: 'i-rKDSggh', alt: 'Frente do Pateo' },
-                    ];
-                    break;
-                case 'water-damage01':
-                    this.galleryImages = [
-                        { src: 'i-D7s86NJ', alt: 'Frente do Pateo' },
-                        { src: 'i-2mtMBKG', alt: 'Frente do Pateo' },
-                        { src: 'i-dMTpsnH', alt: 'Frente do Pateo' },
-                        { src: 'i-bWnpxBs', alt: 'Frente do Pateo' },
-                        { src: 'i-nJ4KvnC', alt: 'Frente do Pateo' },
-                        { src: 'i-NqGw3Tz', alt: 'Frente do Pateo' }
-                    ];
-                    break;
-                case 'water-damage02':
-                    this.galleryImages = [
-                        { src: 'i-n4DDBM2', alt: 'Frente do Pateo' },
-                        { src: 'i-dn3bMGR', alt: 'Frente do Pateo' },
-                    ];
-                    break;
-                case 'pool-prep':
-                    this.galleryImages = [
-                        { src: 'i-GW8k6j4', alt: 'Frente do Pateo' },
-                        { src: 'i-gzjftVG', alt: 'Frente do Pateo' },
-                        { src: 'i-7KJvhZK', alt: 'Frente do Pateo' },
-                        { src: 'i-rzt8Lg9', alt: 'Frente do Pateo' },
-                    ];
-                    break;
-                case 'roofInspect':
-                    this.galleryImages = [
-                        { src: 'i-bLtgB95', alt: 'Frente do Pateo' },
-                        { src: 'i-RcPKptq', alt: 'Frente do Pateo' },
-                    ];
-                    break;
-                case 'sideView':
-                    this.galleryImages = [
-                        { src: 'i-rwPwWDs', alt: 'Frente do Pateo' },
-                        { src: 'i-2sstJ4d', alt: 'Frente do Pateo' },
-
-                    ];
-                    break;
-                case 'sideView02':
-                    this.galleryImages = [
-                        { src: 'i-FrFwx8K', alt: 'Frente do Pateo' },
-                        { src: 'i-WsSDkLm', alt: 'Frente do Pateo' },
-                        { src: 'i-DNF7kvd', alt: 'Frente do Pateo' },
-                        { src: 'i-rKDSggh', alt: 'Frente do Pateo' },
-                    ];
-                    break;
-                case 'interior01':
-                    this.galleryImages = [
-                        { src: 'i-rvGKhHK', alt: 'Frente do Pateo' },
-                        { src: 'i-RrftZLV', alt: 'Frente do Pateo' },
-                        { src: 'i-VBK9dnL', alt: 'Frente do Pateo' },
-                        { src: 'i-bcHHcWH', alt: 'Frente do Pateo' },
-                        { src: 'i-dmzrdnP', alt: 'Frente do Pateo' },
-                        { src: 'i-xdJtc6b', alt: 'Frente do Pateo' },
-                        { src: 'i-5dk27sx', alt: 'Frente do Pateo' },
-                        { src: 'i-fzNKs5S', alt: 'Frente do Pateo' },
-                        { src: 'i-QXJNMpV', alt: 'Frente do Pateo' },
-                    ];
-                    break;
-                case 'interior02':
-                    this.galleryImages = [
-                        { src: 'i-pPNWGPB', alt: 'Frente do Pateo' },
-                        { src: 'i-NqxDmZW', alt: 'Frente do Pateo' },
-                        { src: 'i-8z5tZmh', alt: 'Frente do Pateo' },
-                        { src: 'i-HVbnfcR', alt: 'Frente do Pateo' },
-                        { src: 'i-mt5WvKq', alt: 'Frente do Pateo' },
-                        { src: 'i-m8dL9Pt', alt: 'Frente do Pateo' },
-                        { src: 'i-WVtM7mG', alt: 'Frente do Pateo' },
-                        { src: 'i-Lxw8x6v', alt: 'Frente do Pateo' },
-                        { src: 'i-n8gsJ72', alt: 'Frente do Pateo' },
-                        { src: 'i-sQVGfQD', alt: 'Frente do Pateo' },
-                        { src: 'i-LwwkrW3', alt: 'Frente do Pateo' },
-                        { src: 'i-qLq5QkX', alt: 'Frente do Pateo' },
-                    ];
-                    break;
-                case 'exterior02':
-                    this.galleryImages = [
-                        { src: 'i-pDGQwB4', alt: 'Frente do Pateo' },
-                        { src: 'i-s7N7LjQ', alt: 'Frente do Pateo' },
-                        { src: 'i-r2rjbt5', alt: 'Frente do Pateo' },
-                        { src: 'i-cfMkhXn', alt: 'Frente do Pateo' },
-                        { src: 'i-FNCzWd8', alt: 'Frente do Pateo' },
-                        { src: 'i-6QfJhX9', alt: 'Frente do Pateo' },
-                        { src: 'i-964z32f', alt: 'Frente do Pateo' },
-                        { src: 'i-zmdT9sw', alt: 'Frente do Pateo' },
-                        { src: 'i-P7kB7Q2', alt: 'Frente do Pateo' },
-                        { src: 'i-MtddJLx', alt: 'Frente do Pateo' },
-                        { src: 'i-457D8Vc', alt: 'Frente do Pateo' },
-                        { src: 'i-tmZ7sbx', alt: 'Frente do Pateo' },
-                        { src: 'i-sJ58gmg', alt: 'Frente do Pateo' },
-                    ];
-                    break;
-                case 'interior03':
-                    this.galleryImages = [
-                        { src: 'i-8PjSh2b', alt: 'Frente do Pateo' },
-                        { src: 'i-qXTtJJB', alt: 'Frente do Pateo' },
-                        { src: 'i-3dSkwcV', alt: 'Frente do Pateo' },
-                        { src: 'i-L8zJCmd', alt: 'Frente do Pateo' },
-                        { src: 'i-7CvCpZf', alt: 'Frente do Pateo' },
-                        { src: 'i-LLQ8xc3', alt: 'Frente do Pateo' },
-                        { src: 'i-Nk9vqcq', alt: 'Frente do Pateo' },
-                        { src: 'i-Wzwrk3q', alt: 'Frente do Pateo' },
-                        { src: 'i-mdJKJqS', alt: 'Frente do Pateo' },
-                        { src: 'i-5Zzgf7q', alt: 'Frente do Pateo' }];
-                    break;
-                case 'exterior03':
-                    this.galleryImages = [
-                        { src: 'i-4DXPdnF', alt: 'Frente do Pateo' },
-                        { src: 'i-RVqRpVx', alt: 'Frente do Pateo' },
-                        { src: 'i-Zn9mNR3', alt: 'Frente do Pateo' },
-                        { src: 'i-JM2Sdq2', alt: 'Frente do Pateo' },
-                        { src: 'i-gSMJz4m', alt: 'Frente do Pateo' },
-                        { src: 'i-ChxFnHC', alt: 'Frente do Pateo' },
-                        { src: 'i-NJhdGcq', alt: 'Frente do Pateo' },
-                        { src: 'i-Zx8TCZp', alt: 'Frente do Pateo' }];
-                    break;
-                case 'exterior04':
-                    this.galleryImages = [
-                        { src: 'i-wvcfG2D', alt: 'Frente do Pateo' },
-                        { src: 'i-Nh43GdW', alt: 'Frente do Pateo' },
-                        { src: 'i-q9Rsfkv', alt: 'Frente do Pateo' },
-                        { src: 'i-qvFmX8v', alt: 'Frente do Pateo' },
-                        { src: 'i-nqKshzm', alt: 'Frente do Pateo' },
-                        { src: 'i-9742mBR', alt: 'Frente do Pateo' },
-                        { src: 'i-6BvG7SB', alt: 'Frente do Pateo' }];
-                    break;
-                case 'interior04':
-                    this.galleryImages = [
-                        { src: 'i-DhxgWHB', alt: 'Frente do Pateo' },
-                        { src: 'i-zZ5WgVN', alt: 'Frente do Pateo' },
-                        { src: 'i-WQWPPjX', alt: 'Frente do Pateo' },
-                        { src: 'i-3XfR828', alt: 'Frente do Pateo' },
-                        { src: 'i-z7xsvht', alt: 'Frente do Pateo' },
-                        { src: 'i-MTprt73', alt: 'Frente do Pateo' },
-                        { src: 'i-c7JJLSZ', alt: 'Frente do Pateo' },
-                        { src: 'i-hj2PbZj', alt: 'Frente do Pateo' },
-                        { src: 'i-d2JCc6Z', alt: 'Frente do Pateo' },
-                        { src: 'i-GpkxvbF', alt: 'Frente do Pateo' },
-                        { src: 'i-hj2PbZj', alt: 'Frente do Pateo' }];
-                    break;
-                case 'exterior05':
-                    this.galleryImages = [
-                        { src: 'i-K788dw5', alt: 'Frente do Pateo' },
-                        { src: 'i-tFdC4WM', alt: 'Frente do Pateo' },
-                        { src: 'i-2gp8pW3', alt: 'Frente do Pateo' },
-                        { src: 'i-mbfv588', alt: 'Frente do Pateo' },
-                        { src: 'i-mgSF53d', alt: 'Frente do Pateo' }
-                    ];
-                    break;
-                case 'interior05':
-                    this.galleryImages = [
-                        { src: 'i-qWnQwjL', alt: 'Frente do Pateo' },
-                        { src: 'i-fmts2qZ', alt: 'Frente do Pateo' },
-                        { src: 'i-XKpwN6D', alt: 'Frente do Pateo' },
-                        { src: 'i-W8KxXqv', alt: 'Frente do Pateo' },
-                        { src: 'i-SQnhdr4', alt: 'Frente do Pateo' },
-                        { src: 'i-rpf8594', alt: 'Frente do Pateo' },
-                        { src: 'i-PsgTZPw', alt: 'Frente do Pateo' },
-                        { src: 'i-4CKFnGj', alt: 'Frente do Pateo' },
-                        { src: 'i-bWG9R3B', alt: 'Frente do Pateo' },
-                        { src: 'i-Xxhkfjf', alt: 'Frente do Pateo' },
-                        { src: 'i-b5MwmST', alt: 'Frente do Pateo' },
-                        { src: 'i-KcT5SSv', alt: 'Frente do Pateo' },
-                        { src: 'i-4gwjbnZ', alt: 'Frente do Pateo' },
-                        { src: 'i-VJ7mwpv', alt: 'Frente do Pateo' },
-                        { src: 'i-RgNNZtb', alt: 'Frente do Pateo' },
-                        { src: 'i-xJjFzXJ', alt: 'Frente do Pateo' },
-                        { src: 'i-DCh8CDR', alt: 'Frente do Pateo' },
-                        { src: 'i-JdkJbxK', alt: 'Frente do Pateo' },
-                        { src: 'i-sKqmjXC', alt: 'Frente do Pateo' },
-                        { src: 'i-4vPpsJq', alt: 'Frente do Pateo' },
-                        { src: 'i-WZJJ7Cd', alt: 'Frente do Pateo' },
-                        { src: 'i-HNnJp7X', alt: 'Frente do Pateo' },
-                        { src: 'i-bVZDwXg', alt: 'Frente do Pateo' },
-                        { src: 'i-tDkvq9p', alt: 'Frente do Pateo' },
-                        { src: 'i-LPKNNHF', alt: 'Frente do Pateo' },
-                    ];
-                    break;
-                case 'interior06':
-                    this.galleryImages = [
-                        { src: 'i-Rv2fckZ', alt: 'Frente do Pateo' },
-                        { src: 'i-CNdnk4N', alt: 'Frente do Pateo' },
-                        { src: 'i-CbJcbG2', alt: 'Frente do Pateo' },
-                        { src: 'i-VDCxhNV', alt: 'Frente do Pateo' },
-                        { src: 'i-b57PzZJ', alt: 'Frente do Pateo' },
-                        { src: 'i-dcQqgNG', alt: 'Frente do Pateo' },
-                        { src: 'i-VdPhXpK', alt: 'Frente do Pateo' },
-                        { src: 'i-P2HD34Q', alt: 'Frente do Pateo' },
-                        { src: 'i-kXRJ5PP', alt: 'Frente do Pateo' },
-                        { src: 'i-j5tP9DS', alt: 'Frente do Pateo' },
-                        { src: 'i-5ptVTmX', alt: 'Frente do Pateo' },
-                        { src: 'i-pR8VKNZ', alt: 'Frente do Pateo' },
-                        { src: 'i-nPLKRJ7', alt: 'Frente do Pateo' },
-                        { src: 'i-F4DKrXb', alt: 'Frente do Pateo' },
-                        { src: 'i-NHWrCHF', alt: 'Frente do Pateo' },
-                        { src: 'i-cLBtDKS', alt: 'Frente do Pateo' },
-                        { src: 'i-xgJPCh6', alt: 'Frente do Pateo' },
-                        { src: 'i-fPCZT7m', alt: 'Frente do Pateo' },
-                        { src: 'i-QzJ77SX', alt: 'Frente do Pateo' },
-                        { src: 'i-NPGPr78', alt: 'Frente do Pateo' },
-                        { src: 'i-SDdT86B', alt: 'Frente do Pateo' },
-                        { src: 'i-PQc7T23', alt: 'Frente do Pateo' },
-                        { src: 'i-J9xqwTx', alt: 'Frente do Pateo' },
-                        { src: 'i-6NSSZ3D', alt: 'Frente do Pateo' },
-                        { src: 'i-Ljxqq56', alt: 'Frente do Pateo' },
-                    ];
-                    break;
-                    case 'exterior06':
-                    this.galleryImages = [
-                        { src: 'i-zhwjgbW', alt: 'Frente do Pateo' },
-                        { src: 'i-5LP2qMx', alt: 'Frente do Pateo' },
-                        { src: 'i-JbqKmMS', alt: 'Frente do Pateo' },
-                        { src: 'i-5XsMm4p', alt: 'Frente do Pateo' },
-                        { src: 'i-52pDwWg', alt: 'Frente do Pateo' },
-                        { src: 'i-jXqDrKg', alt: 'Frente do Pateo' },
-                        { src: 'i-6ZtMm4k', alt: 'Frente do Pateo' },
-                        { src: 'i-CKfJFqN', alt: 'Frente do Pateo' },
-                        { src: 'i-kNvQLLh', alt: 'Frente do Pateo' },
-                        { src: 'i-X2GxTCf', alt: 'Frente do Pateo' }
-                    ];
-                    break;
-                    case 'interior07':
-                    this.galleryImages = [
-                        { src: 'i-p5HrmN9', alt: 'Frente do Pateo' },
-                        { src: 'i-Pr4QH6L', alt: 'Frente do Pateo' },
-                        { src: 'i-XhvTtZF', alt: 'Frente do Pateo' },
-                        { src: 'i-zGfrntx', alt: 'Frente do Pateo' },
-                        { src: 'i-pN57T8M', alt: 'Frente do Pateo' },
-                        { src: 'i-DpTksKL', alt: 'Frente do Pateo' },
-                        { src: 'i-rjcJp8p', alt: 'Frente do Pateo' },
-                        { src: 'i-FL3m5jn', alt: 'Frente do Pateo' },
-                        { src: 'i-5ZTsdR3', alt: 'Frente do Pateo' },
-                        { src: 'i-rwXDH3C', alt: 'Frente do Pateo' },
-                        { src: 'i-ZpjfwWc', alt: 'Frente do Pateo' },
-                        { src: 'i-vdsPGSb', alt: 'Frente do Pateo' },
-                        { src: 'i-cjxZhrS', alt: 'Frente do Pateo' },
-                        { src: 'i-jVGF5Wv', alt: 'Frente do Pateo' },
-                        { src: 'i-VT2DGKP', alt: 'Frente do Pateo' },
-                        { src: 'i-bb8vnFH', alt: 'Frente do Pateo' },
-                        { src: 'i-MKcpsDx', alt: 'Frente do Pateo' },
-                        { src: 'i-m2Z2VZ3', alt: 'Frente do Pateo' },
-                        { src: 'i-KLzbJdP', alt: 'Frente do Pateo' },
-                        { src: 'i-kZbR4b7', alt: 'Frente do Pateo' },
-                        { src: 'i-rtNBkvR', alt: 'Frente do Pateo' },
-                        { src: 'i-jXzfknQ', alt: 'Frente do Pateo' },
-                        { src: 'i-Xb7drm4', alt: 'Frente do Pateo' },
-                        { src: 'i-3zbR35n', alt: 'Frente do Pateo' },
-                        { src: 'i-Bq4D797', alt: 'Frente do Pateo' }
-                    ];
-                    break;
-                    case 'exterior07':
-                        this.galleryImages = [
-                            { src: 'i-Q4vZN8k', alt: 'Frente do Pateo' },
-                            { src: 'i-mMSLDqx', alt: 'Frente do Pateo' },
-                            { src: 'i-6ntqXVL', alt: 'Frente do Pateo' },
-                            { src: 'i-8LnDqsw', alt: 'Frente do Pateo' },
-                            { src: 'i-ZzkmmXm', alt: 'Frente do Pateo' },
-                            { src: 'i-s4b4qHC', alt: 'Frente do Pateo' },
-                            { src: 'i-Pnbg7tQ', alt: 'Frente do Pateo' },
-                            { src: 'i-XDZSncQ', alt: 'Frente do Pateo' },
-                            { src: 'i-t4b4s99', alt: 'Frente do Pateo' }
-                    ];
-                    break;  
-                default:
-                    this.galleryImages = [];
-            }
-
+            this.galleryTitle = galleryId || title || 'Galeria de Fotos';
+            this.galleryImages = getGalleryImages(galleryId);
             this.showGallery = true;
         },
 
@@ -815,16 +383,199 @@ export default {
             this.fullScreenImage = null;
         },
 
-        showFullImage(image) {
+        showFullImage(image, closeAfter) {
             this.fullScreenImage = image;
+            this.closeGalleryAfterFullScreen = closeAfter;
         },
 
         closeFullImage() {
             this.fullScreenImage = null;
+            this.showGallery = !this.closeGalleryAfterFullScreen;
         },
+        addElectricLines(){
+            const poolLineOptions = { color: 'yellow', weight: 3, opacity: 0.7, dashArray: '10, 10', dashOffset: '0' };
 
-        addSewageLines() {
+            if (this.markerRefs.PEE && this.markerRefs.PE0) {
+                const polyline = L.polyline([this.markerRefs.PEE.location, this.markerRefs.PE0.location], poolLineOptions).addTo(this.map);
+                this.polylines.push(polyline);
+            }
+            if (this.markerRefs.PE0 && this.markerRefs.PE1) {
+                const polyline = L.polyline([this.markerRefs.PE0.location, this.markerRefs.PE1.location], poolLineOptions).addTo(this.map);
+                this.polylines.push(polyline);
+            }
+            if (this.markerRefs.PE1 && this.markerRefs.PE2) {
+                const polyline = L.polyline([this.markerRefs.PE1.location, this.markerRefs.PE2.location], poolLineOptions).addTo(this.map);
+                this.polylines.push(polyline);
+            }
+            if (this.markerRefs.PE2 && this.markerRefs.PE3) {
+                const polyline = L.polyline([this.markerRefs.PE2.location, this.markerRefs.PE3.location], poolLineOptions).addTo(this.map);
+                this.polylines.push(polyline);
+            }
+            if (this.markerRefs.PE3 && this.markerRefs.PE4) {
+                const polyline = L.polyline([this.markerRefs.PE3.location, this.markerRefs.PE4.location], poolLineOptions).addTo(this.map);
+                this.polylines.push(polyline);
+            }
+            if (this.markerRefs.PE5 && this.markerRefs.PE6) {
+                const polyline = L.polyline([this.markerRefs.PE5.location, this.markerRefs.PE6.location], poolLineOptions).addTo(this.map);
+                this.polylines.push(polyline);
+            }
+            if (this.markerRefs.PE5 && this.markerRefs.PE7) {
+                const polyline = L.polyline([this.markerRefs.PE5.location, this.markerRefs.PE7.location], poolLineOptions).addTo(this.map);
+                this.polylines.push(polyline);
+            }
+            if (this.markerRefs.PE8 && this.markerRefs.PE7) {
+                const polyline = L.polyline([this.markerRefs.PE8.location, this.markerRefs.PE7.location], poolLineOptions).addTo(this.map);
+                this.polylines.push(polyline);
+            }
+            if (this.markerRefs.PE8 && this.markerRefs.PE9) {
+                const polyline = L.polyline([this.markerRefs.PE8.location, this.markerRefs.PE9.location], poolLineOptions).addTo(this.map);
+                this.polylines.push(polyline);
+            }
+            if (this.markerRefs.PE9 && this.markerRefs.PE10) {
+                const polyline = L.polyline([this.markerRefs.PE9.location, this.markerRefs.PE10.location], poolLineOptions).addTo(this.map);
+                this.polylines.push(polyline);
+            }
+            if (this.markerRefs.PE10 && this.markerRefs.PE11) {
+                const polyline = L.polyline([this.markerRefs.PE10.location, this.markerRefs.PE11.location], poolLineOptions).addTo(this.map);
+                this.polylines.push(polyline);
+            }
+            if (this.markerRefs.PE11 && this.markerRefs.PE12) {
+                const polyline = L.polyline([this.markerRefs.PE11.location, this.markerRefs.PE12.location], poolLineOptions).addTo(this.map);
+                this.polylines.push(polyline);
+            }
+            if (this.markerRefs.PE12 && this.markerRefs.PE13) {
+                const polyline = L.polyline([this.markerRefs.PE12.location, this.markerRefs.PE13.location], poolLineOptions).addTo(this.map);
+                this.polylines.push(polyline);
+            }
+
+            if (this.markerRefs.PE15 && this.markerRefs.PE14)
+            {
+                const polyline = L.polyline([this.markerRefs.PE14.location, this.markerRefs.PE15.location], poolLineOptions).addTo(this.map);
+                this.polylines.push(polyline);
+            }
+
+            if (this.markerRefs.PE15 && this.markerRefs.PE16) {
+                const polyline = L.polyline([this.markerRefs.PE16.location, this.markerRefs.PE15.location], poolLineOptions).addTo(this.map);
+                this.polylines.push(polyline);
+            }
+            if (this.markerRefs.PE17 && this.markerRefs.PE16) {
+                const polyline = L.polyline([this.markerRefs.PE17.location, this.markerRefs.PE16.location], poolLineOptions).addTo(this.map);
+                this.polylines.push(polyline);
+            }
+            if (this.markerRefs.PE17 && this.markerRefs.PE18) {
+                const polyline = L.polyline([this.markerRefs.PE17.location, this.markerRefs.PE18.location], poolLineOptions).addTo(this.map);
+                this.polylines.push(polyline);
+            }
+             if (this.markerRefs.PE6 && this.markerRefs.PE18) {
+                const polyline = L.polyline([this.markerRefs.PE6.location, this.markerRefs.PE18.location], poolLineOptions).addTo(this.map);
+                this.polylines.push(polyline);
+            }
+            if (this.markerRefs.PE15 && this.markerRefs.PE19) {
+                const polyline = L.polyline([this.markerRefs.PE15.location, this.markerRefs.PE19.location], poolLineOptions).addTo(this.map);
+                this.polylines.push(polyline);
+            }
+            if (this.markerRefs.PE20 && this.markerRefs.PE19) {
+                const polyline = L.polyline([this.markerRefs.PE20.location, this.markerRefs.PE19.location], poolLineOptions).addTo(this.map);
+                this.polylines.push(polyline);
+            }
+            if (this.markerRefs.PE20 && this.markerRefs.PE21) {
+                const polyline = L.polyline([this.markerRefs.PE20.location, this.markerRefs.PE21.location], poolLineOptions).addTo(this.map);
+                this.polylines.push(polyline);
+            }
+        },
+        addTelcomLines(){
+            const poolLineOptions = { color: 'green', weight: 3, opacity: 0.7, dashArray: '10, 10', dashOffset: '0' };
+
+            if (this.markerRefs.PCE && this.markerRefs.PC1) {
+                const polyline = L.polyline([this.markerRefs.PCE.location, this.markerRefs.PC1.location], poolLineOptions).addTo(this.map);
+                this.polylines.push(polyline);
+            }
+
+            if (this.markerRefs.PC2 && this.markerRefs.PC1) {
+                const polyline = L.polyline([this.markerRefs.PC2.location, this.markerRefs.PC1.location], poolLineOptions).addTo(this.map);
+                this.polylines.push(polyline);
+            }
+        },
+        addPoolLines(){
+            const poolLineOptions = { color: 'lightblue', weight: 3, opacity: 0.7, dashArray: '10, 10', dashOffset: '0' };
+
+            if (this.markerRefs.P0 && this.markerRefs.P1) {
+                const polyline = L.polyline([this.markerRefs.P0.location, this.markerRefs.P1.location], poolLineOptions).addTo(this.map);
+                this.polylines.push(polyline);
+            }
+        },
+        addWaterLines(){
             const sewageLineOptions = { color: 'blue', weight: 3, opacity: 0.7, dashArray: '10, 10', dashOffset: '0' };
+
+            if (this.markerRefs.PAE && this.markerRefs.CA0) {
+                const polyline = L.polyline([this.markerRefs.PAE.location, this.markerRefs.CA0.location], sewageLineOptions).addTo(this.map);
+                this.polylines.push(polyline);
+            }
+
+            if (this.markerRefs.CA0 && this.markerRefs.CA1) {
+                const polyline = L.polyline([this.markerRefs.CA0.location, this.markerRefs.CA1.location], sewageLineOptions).addTo(this.map);
+                this.polylines.push(polyline);
+            }
+            if (this.markerRefs.CA0 && this.markerRefs.CA0A) {
+                const polyline = L.polyline([this.markerRefs.CA0.location, this.markerRefs.CA0A.location], sewageLineOptions).addTo(this.map);
+                this.polylines.push(polyline);
+            }
+
+            if (this.markerRefs.CA3 && this.markerRefs.CA1) {
+                const polyline = L.polyline([this.markerRefs.CA3.location, this.markerRefs.CA1.location], sewageLineOptions).addTo(this.map);
+                this.polylines.push(polyline);
+            }
+            if (this.markerRefs.CA3 && this.markerRefs.CA2) {
+                const polyline = L.polyline([this.markerRefs.CA3.location, this.markerRefs.CA2.location], sewageLineOptions).addTo(this.map);
+                this.polylines.push(polyline);
+            }
+            if (this.markerRefs.CA2 && this.markerRefs.CA4A) {
+                const polyline = L.polyline([this.markerRefs.CA2.location, this.markerRefs.CA4A.location], sewageLineOptions).addTo(this.map);
+                this.polylines.push(polyline);
+            }
+            if (this.markerRefs.CA4 && this.markerRefs.CA4A) {
+                const polyline = L.polyline([this.markerRefs.CA4.location, this.markerRefs.CA4A.location], sewageLineOptions).addTo(this.map);
+                this.polylines.push(polyline);
+            }
+            if (this.markerRefs.CA2 && this.markerRefs.CA7) {
+                const polyline = L.polyline([this.markerRefs.CA2.location, this.markerRefs.CA7.location], sewageLineOptions).addTo(this.map);
+                this.polylines.push(polyline);
+            }
+            if (this.markerRefs.CA5 && this.markerRefs.CA7) {
+                const polyline = L.polyline([this.markerRefs.CA5.location, this.markerRefs.CA7.location], sewageLineOptions).addTo(this.map);
+                this.polylines.push(polyline);
+            }
+            if (this.markerRefs.CA7 && this.markerRefs.CA6) {
+                const polyline = L.polyline([this.markerRefs.CA7.location, this.markerRefs.CA6.location], sewageLineOptions).addTo(this.map);
+                this.polylines.push(polyline);
+            }
+            if (this.markerRefs.CA8 && this.markerRefs.CA7) {
+                const polyline = L.polyline([this.markerRefs.CA8.location, this.markerRefs.CA7.location], sewageLineOptions).addTo(this.map);
+                this.polylines.push(polyline);
+            }
+            if (this.markerRefs.CA8 && this.markerRefs.CA9) {
+                const polyline = L.polyline([this.markerRefs.CA8.location, this.markerRefs.CA9.location], sewageLineOptions).addTo(this.map);
+                this.polylines.push(polyline);
+            }
+            if (this.markerRefs.CA10 && this.markerRefs.CA9) {
+                const polyline = L.polyline([this.markerRefs.CA10.location, this.markerRefs.CA9.location], sewageLineOptions).addTo(this.map);
+                this.polylines.push(polyline);
+            }
+            if (this.markerRefs.CA0A && this.markerRefs.PA1) {
+                const polyline = L.polyline([this.markerRefs.CA0A.location, this.markerRefs.PA1.location], sewageLineOptions).addTo(this.map);
+                this.polylines.push(polyline);
+            }
+            if (this.markerRefs.CA0A && this.markerRefs.CA0E1) {
+                const polyline = L.polyline([this.markerRefs.CA0A.location, this.markerRefs.CA0E1.location], sewageLineOptions).addTo(this.map);
+                this.polylines.push(polyline);
+            }
+            if (this.markerRefs.CA0E2 && this.markerRefs.CA0E1) {
+                const polyline = L.polyline([this.markerRefs.CA0E2.location, this.markerRefs.CA0E1.location], sewageLineOptions).addTo(this.map);
+                this.polylines.push(polyline);
+            }
+        },
+        addSewageLines() {
+            const sewageLineOptions = { color: 'brown', weight: 3, opacity: 0.7, dashArray: '10, 10', dashOffset: '0' };
 
             if (this.markerRefs.CV0 && this.markerRefs.CV1) {
                 const polyline = L.polyline([this.markerRefs.CV0.location, this.markerRefs.CV1.location], sewageLineOptions).addTo(this.map);
@@ -879,6 +630,11 @@ export default {
                 const polyline = L.polyline([this.markerRefs.CV0.location, this.markerRefs.CV9.location], sewageLineOptions).addTo(this.map);
                 this.polylines.push(polyline);
                 this.markerRefs.CV9_CV0_line = polyline;
+            }
+
+            if (this.markerRefs.CV10 && this.markerRefs.CV5) {
+                const polyline = L.polyline([this.markerRefs.CV10.location, this.markerRefs.CV5.location], sewageLineOptions).addTo(this.map);
+                this.polylines.push(polyline);
             }
         },
     },
