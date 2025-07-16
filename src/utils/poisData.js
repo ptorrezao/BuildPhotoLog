@@ -173,5 +173,17 @@ export function getPOIs(imgHeight, imgWidth) {
         { name: 'Galeria', interior: false, icon: 'gallery', location: [imgHeight * 0.07, imgWidth * 0.38], description: 'Fotos', date: '20250530', isGallery: true, galleryId: '6ntqXVL' },
         { name: 'Galeria', interior: false, icon: 'gallery', location: [imgHeight * 0.60, imgWidth * 0.1], description: 'Fotos', date: '20250530', isGallery: true, galleryId: 'construction' },
         { name: 'Galeria', interior: false, icon: 'gallery', location: [imgHeight * 0.30, imgWidth * 0.1], description: 'Fotos', date: '20250530', isGallery: true, galleryId: 'olivetree' },
+
+        // 20250714
+        { name: 'Galeria', interior: true, icon: 'gallery', location: [imgHeight * 0.60, imgWidth * 0.60], description: 'Fotos', date: '20250714', isGallery: true, galleryId: 'KvzLG8m' },
+        { name: 'Galeria', interior: true, icon: 'gallery', location: [imgHeight * 0.55, imgWidth * 0.50], description: 'Fotos', date: '20250714', isGallery: true, galleryId: 'mbLbGJF' },
+        { name: 'Galeria', interior: true, icon: 'gallery', location: [imgHeight * 0.55, imgWidth * 0.40], description: 'Fotos', date: '20250714', isGallery: true, galleryId: 'QCxQ97Q' },
+        { name: 'Galeria', interior: true, icon: 'gallery', location: [imgHeight * 0.65, imgWidth * 0.40], description: 'Fotos', date: '20250714', isGallery: true, galleryId: 'kTqFGPx' },
+        { name: 'Galeria', interior: true, icon: 'gallery', location: [imgHeight * 0.55, imgWidth * 0.30], description: 'Fotos', date: '20250714', isGallery: true, galleryId: 'LK59fHF' },
+        { name: 'Galeria', interior: true, icon: 'gallery', location: [imgHeight * 0.40, imgWidth * 0.33], description: 'Fotos', date: '20250714', isGallery: true, galleryId: '879kqSf' },
+        { name: 'Galeria', interior: false, icon: 'gallery', location: [imgHeight * 0.13, imgWidth * 0.38], description: 'Fotos', date: '20250714', isGallery: true, galleryId: 'QHt5Mg7' },
+        { name: 'Galeria', interior: false, icon: 'gallery', location: [imgHeight * 0.92, imgWidth * 0.18], description: 'Fotos', date: '20250714', isGallery: true, galleryId: 'qLwwnhj' },
+        { name: 'Galeria', interior: false, icon: 'gallery', location: [imgHeight * 0.25, imgWidth * 0.63], description: 'Fotos', date: '20250714', isGallery: true, galleryId: 'vnccgBW' },
+        
     ];
 }
