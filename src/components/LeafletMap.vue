@@ -41,15 +41,15 @@ let DefaultIcon = L.icon({
 const liconSize = [36, 36]; // Default icon size for custom icons
 // Define custom icons for different POI types
 const customIcons = {
-    'lamp': L.icon({ iconUrl: "/icons/lamp.png", shadowUrl: iconShadow, iconSize: liconSize, iconAnchor: [12, 41], popupAnchor: [0, -41] }),
-    'pool': L.icon({ iconUrl: "/icons/filter.png", shadowUrl: iconShadow, iconSize: liconSize, iconAnchor: [12, 41], popupAnchor: [0, -41] }),
-    'pipe': L.icon({ iconUrl: "/icons/water-pipe.png", shadowUrl: iconShadow, iconSize: liconSize, iconAnchor: [12, 41], popupAnchor: [0, -41] }),
-    'well': L.icon({ iconUrl: "/icons/rain-water-harvesting.png", shadowUrl: iconShadow, iconSize: liconSize, iconAnchor: [12, 41], popupAnchor: [0, -41] }),
-    'sewage': L.icon({ iconUrl: "/icons/tee.png", shadowUrl: iconShadow, iconSize: liconSize, iconAnchor: [12, 36], popupAnchor: [0, -36] }),
-    'water': L.icon({ iconUrl: "/icons/tap.png", shadowUrl: iconShadow, iconSize: liconSize, iconAnchor: [12, 36], popupAnchor: [0, -36] }),
-    'electric': L.icon({ iconUrl: "/icons/wire.png", shadowUrl: iconShadow, iconSize: liconSize, iconAnchor: [12, 36], popupAnchor: [0, -36] }),
-    'telcom': L.icon({ iconUrl: "/icons/lan.png", shadowUrl: iconShadow, iconSize: liconSize, iconAnchor: [12, 36], popupAnchor: [0, -36] }),
-    'gallery': L.icon({ iconUrl: "/icons/camera.png", shadowUrl: iconShadow, iconSize: liconSize, iconAnchor: [12, 42], popupAnchor: [0, -42] }),
+    'lamp': L.icon({ iconUrl: "./icons/lamp.png", shadowUrl: iconShadow, iconSize: liconSize, iconAnchor: [12, 41], popupAnchor: [0, -41] }),
+    'pool': L.icon({ iconUrl: "./icons/filter.png", shadowUrl: iconShadow, iconSize: liconSize, iconAnchor: [12, 41], popupAnchor: [0, -41] }),
+    'pipe': L.icon({ iconUrl: "./icons/water-pipe.png", shadowUrl: iconShadow, iconSize: liconSize, iconAnchor: [12, 41], popupAnchor: [0, -41] }),
+    'well': L.icon({ iconUrl: "./icons/rain-water-harvesting.png", shadowUrl: iconShadow, iconSize: liconSize, iconAnchor: [12, 41], popupAnchor: [0, -41] }),
+    'sewage': L.icon({ iconUrl: "./icons/tee.png", shadowUrl: iconShadow, iconSize: liconSize, iconAnchor: [12, 36], popupAnchor: [0, -36] }),
+    'water': L.icon({ iconUrl: "./icons/tap.png", shadowUrl: iconShadow, iconSize: liconSize, iconAnchor: [12, 36], popupAnchor: [0, -36] }),
+    'electric': L.icon({ iconUrl: "./icons/wire.png", shadowUrl: iconShadow, iconSize: liconSize, iconAnchor: [12, 36], popupAnchor: [0, -36] }),
+    'telcom': L.icon({ iconUrl: "./icons/lan.png", shadowUrl: iconShadow, iconSize: liconSize, iconAnchor: [12, 36], popupAnchor: [0, -36] }),
+    'gallery': L.icon({ iconUrl: "./icons/camera.png", shadowUrl: iconShadow, iconSize: liconSize, iconAnchor: [12, 42], popupAnchor: [0, -42] }),
 };
 
 L.Marker.prototype.options.icon = DefaultIcon;
@@ -67,7 +67,7 @@ export default {
         },
         imageUrl: {
             type: String,
-            default: '/images/DJI_0784.jpg'
+            default: './images/DJI_0784.jpg'
         },
         showGalery: {
             type: Boolean,
