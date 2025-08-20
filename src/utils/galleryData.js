@@ -339,7 +339,32 @@ export const galleryData = {
     'QHt5Mg7': [{ src: 'i-QHt5Mg7', alt: 'Frente do Pateo' },{ src: 'i-ZGsNRBg', alt: 'Frente do Pateo' }],
     '879kqSf': [{ src: 'i-879kqSf', alt: 'Frente do Pateo' },{ src: 'i-qZM9Fdm', alt: 'Frente do Pateo' },{ src: 'i-SD2n23G', alt: 'Frente do Pateo' }],
     'LK59fHF': [{ src: 'i-LK59fHF', alt: 'Frente do Pateo' },{ src: 'i-wHJktPb', alt: 'Frente do Pateo' }],
-    'QCxQ97Q': [{ src: 'i-QCxQ97Q', alt: 'Frente do Pateo' }]
+    'QCxQ97Q': [{ src: 'i-QCxQ97Q', alt: 'Frente do Pateo' }],
+
+    
+    'gjcKJbD': [{ src: 'i-gjcKJbD', alt: 'Frente do Pateo' }],
+    'SmsPvWZ': [{ src: 'i-SmsPvWZ', alt: 'Frente do Pateo' }],
+    '7FcbxVM': [{ src: 'i-7FcbxVM', alt: 'Frente do Pateo' }],
+    'QSBV44B': [{ src: 'i-QSBV44B', alt: 'Frente do Pateo' }],
+    'QCzmQNR': [{ src: 'i-QCzmQNR', alt: 'Frente do Pateo' }],
+    'qz8zX35': [{ src: 'i-qz8zX35', alt: 'Frente do Pateo' }],
+    'pk8Z5d6': [{ src: 'i-pk8Z5d6', alt: 'Frente do Pateo' }],
+    'SG47KfF': [{ src: 'i-SG47KfF', alt: 'Frente do Pateo' }],
+    'M5bXR8h': [{ src: 'i-M5bXR8h', alt: 'Frente do Pateo' }],
+    'jzQmfzW': [{ src: 'i-jzQmfzW', alt: 'Frente do Pateo' }],
+    'j8cm9d3': [
+        { src: 'i-j8cm9d3', alt: 'Frente do Pateo' },
+        { src: 'i-DJ4QKmT', alt: 'Frente do Pateo' },
+        { src: 'i-5rPHtV7', alt: 'Frente do Pateo' },
+        { src: 'i-FtfsGXP', alt: 'Frente do Pateo' }
+    ],
+    'm8wFzZR': [
+        { src: 'i-m8wFzZR', alt: 'Frente do Pateo' },
+        { src: 'i-Lg89NPq', alt: 'Frente do Pateo' },
+        { src: 'i-5XLxzg2', alt: 'Frente do Pateo' }
+    ],
+        
+    
 };
 
 /**

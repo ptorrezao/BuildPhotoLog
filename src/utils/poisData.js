@@ -185,5 +185,20 @@ export function getPOIs(imgHeight, imgWidth) {
         { name: 'Galeria', interior: false, icon: 'gallery', location: [imgHeight * 0.92, imgWidth * 0.18], description: 'Fotos', date: '20250714', isGallery: true, galleryId: 'qLwwnhj' },
         { name: 'Galeria', interior: false, icon: 'gallery', location: [imgHeight * 0.25, imgWidth * 0.63], description: 'Fotos', date: '20250714', isGallery: true, galleryId: 'vnccgBW' },
         
+        // 20250819
+        { name: 'Galeria', interior: true, icon: 'gallery', location: [imgHeight * 0.73, imgWidth * 0.430], description: 'Fotos', date: '20250819', isGallery: true, galleryId: '7FcbxVM' },
+        { name: 'Galeria', interior: true, icon: 'gallery', location: [imgHeight * 0.60, imgWidth * 0.430], description: 'Fotos', date: '20250819', isGallery: true, galleryId: 'QSBV44B' },
+        { name: 'Galeria', interior: true, icon: 'gallery', location: [imgHeight * 0.680, imgWidth * 0.57], description: 'Fotos', date: '20250819', isGallery: true, galleryId: 'gjcKJbD' },
+        { name: 'Galeria', interior: true, icon: 'gallery', location: [imgHeight * 0.64, imgWidth * 0.54], description: 'Fotos', date: '20250819', isGallery: true, galleryId: 'SmsPvWZ' },
+        { name: 'Galeria', interior: true, icon: 'gallery', location: [imgHeight * 0.60, imgWidth * 0.27], description: 'Fotos', date: '20250819', isGallery: true, galleryId: 'QCzmQNR' },
+        { name: 'Galeria', interior: true, icon: 'gallery', location: [imgHeight * 0.63, imgWidth * 0.28], description: 'Fotos', date: '20250819', isGallery: true, galleryId: 'qz8zX35' },
+        { name: 'Galeria', interior: true, icon: 'gallery', location: [imgHeight * 0.36, imgWidth * 0.28], description: 'Fotos', date: '20250819', isGallery: true, galleryId: 'pk8Z5d6' },
+        { name: 'Galeria', interior: true, icon: 'gallery', location: [imgHeight * 0.18, imgWidth * 0.25], description: 'Fotos', date: '20250819', isGallery: true, galleryId: 'SG47KfF' },
+        { name: 'Galeria', interior: true, icon: 'gallery', location: [imgHeight * 0.64, imgWidth * 0.35], description: 'Fotos', date: '20250819', isGallery: true, galleryId: 'M5bXR8h' },
+        { name: 'Galeria', interior: false, icon: 'gallery', location: [imgHeight * 0.10, imgWidth * 0.35], description: 'Fotos', date: '20250819', isGallery: true, galleryId: 'jzQmfzW' },
+        { name: 'Galeria', interior: false, icon: 'gallery', location: [imgHeight * 0.10, imgWidth * 0.15], description: 'Fotos', date: '20250819', isGallery: true, galleryId: 'm8wFzZR' },
+        { name: 'Galeria', interior: false, icon: 'gallery', location: [imgHeight * 0.33, imgWidth * 0.38], description: 'Fotos', date: '20250819', isGallery: true, galleryId: 'j8cm9d3' },
+        
+        
     ];
 }

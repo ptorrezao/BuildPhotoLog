@@ -54,12 +54,12 @@ export default {
     },
     data() {
         return {
-            selectedDate: '2025-07-14',
-            currentImageUrl: '/images/20250714.jpg',
+            selectedDate: '2025-08-19',
+            currentImageUrl: '/images/20250819.jpg',
             showFloorPlant: false,
-            hidePOI: false,
-            showGalery: true,
-            isSlideshow: false,
+            hidePOI: true,
+            showGalery: false,
+            isSlideshow: true,
             slideshowTimer: null,
             availableDates: [
                 '2024-01-01',
@@ -78,7 +78,8 @@ export default {
                 '2025-05-04',
                 '2025-05-19',
                 '2025-05-30',
-                '2025-07-14'
+                '2025-07-14',
+                '2025-08-19'
             ],
             images: {
                 '2024-01-01': '/images/20240101.jpg',
@@ -97,7 +98,8 @@ export default {
                 '2025-05-04': '/images/20250504.jpg',
                 '2025-05-19': '/images/20250519.jpg',
                 '2025-05-30': '/images/20250530.jpg',
-                '2025-07-14': '/images/20250714.jpg'
+                '2025-07-14': '/images/20250714.jpg',
+                '2025-08-19': '/images/20250819.jpg'
             }
         };
     },
